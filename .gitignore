@@ -1,0 +1,22 @@
+# Xcode / Swift
+.DS_Store
+*.xcodeproj/          # regenerated from project.yml with `xcodegen generate`
+*.xcworkspace/xcuserdata/
+xcuserdata/
+DerivedData/
+build/
+*.xcuserstate
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.swiftpm/
+.build/
+
+# Scratch
+/scratchpad/
+demo
+main.swift
