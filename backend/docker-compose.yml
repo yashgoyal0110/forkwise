@@ -1,0 +1,41 @@
+# Production-style stack: Postgres + the API.
+# Before using this, set `provider = "postgresql"` in prisma/schema.prisma.
+#
+#   docker compose up --build
+#   docker compose exec api npx prisma db push
+#   docker compose exec api npm run seed
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: forkwise
+      POSTGRES_PASSWORD: forkwise
+      POSTGRES_DB: forkwise
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U forkwise"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: "postgresql://forkwise:forkwise@db:5432/forkwise?schema=public"
+      JWT_SECRET: "change-me-to-a-long-random-string"
+      JWT_EXPIRES_IN: 7d
+      CORS_ORIGIN: "*"
+    ports:
+      - "4000:4000"
+
+volumes:
+  pgdata:
