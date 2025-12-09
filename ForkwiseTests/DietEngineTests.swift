@@ -7,7 +7,7 @@ import XCTest
 /// kind of thing an interviewer loves to see.
 final class DietEngineTests: XCTestCase {
 
-    // A reusable dishValue builder so each test only specifies what it cares about.
+    // A reusable dish builder so each test only specifies what it cares about.
     private func makeDish(tags: [DietTag] = [], allergens: [Allergen] = [], calories: Int = 400) -> Dish {
         Dish(
             id: UUID().uuidString, name: "Test Dish", description: "", category: "Test",
@@ -23,44 +23,44 @@ final class DietEngineTests: XCTestCase {
     // MARK: - safety(of:for:)
 
     func testDishWithNoMatchingAllergensIsSafe() {
-        let dishValue = makeDish(allergens: [.gluten])
+        let dish = makeDish(allergens: [.gluten])
         let me = profile(allergies: [.nuts, .dairy])
-        XCTAssertEqual(DietEngine.safety(of: dishValue, for: me), .safe)
+        XCTAssertEqual(DietEngine.safety(of: dish, for: me), .safe)
     }
 
     func testDishWithMatchingAllergenIsFlagged() {
-        let dishValue = makeDish(allergens: [.nuts, .gluten])
+        let dish = makeDish(allergens: [.nuts, .gluten])
         let me = profile(allergies: [.nuts])
-        XCTAssertEqual(DietEngine.safety(of: dishValue, for: me), .contains([.nuts]))
+        XCTAssertEqual(DietEngine.safety(of: dish, for: me), .contains([.nuts]))
     }
 
     func testMultipleMatchingAllergensAreAllReported() {
-        let dishValue = makeDish(allergens: [.nuts, .dairy, .gluten])
+        let dish = makeDish(allergens: [.nuts, .dairy, .gluten])
         let me = profile(allergies: [.nuts, .dairy])
         // Result is sorted alphabetically for stable UI/tests.
-        XCTAssertEqual(DietEngine.safety(of: dishValue, for: me), .contains([.dairy, .nuts]))
+        XCTAssertEqual(DietEngine.safety(of: dish, for: me), .contains([.dairy, .nuts]))
     }
 
     func testUserWithNoAllergiesSeesEverythingAsSafe() {
-        let dishValue = makeDish(allergens: [.nuts, .shellfish, .dairy])
-        XCTAssertTrue(DietEngine.safety(of: dishValue, for: profile()).isSafe)
+        let dish = makeDish(allergens: [.nuts, .shellfish, .dairy])
+        XCTAssertTrue(DietEngine.safety(of: dish, for: profile()).isSafe)
     }
 
     // MARK: - matchesDiet(_:for:)
 
     func testVeganUserRejectsVegetarianOnlyDish() {
-        let dishValue = makeDish(tags: [.vegetarian])          // veg but not vegan
-        XCTAssertFalse(DietEngine.matchesDiet(dishValue, for: profile(diet: .vegan)))
+        let dish = makeDish(tags: [.vegetarian])          // veg but not vegan
+        XCTAssertFalse(DietEngine.matchesDiet(dish, for: profile(diet: .vegan)))
     }
 
     func testVegetarianUserAcceptsVeganDish() {
-        let dishValue = makeDish(tags: [.vegan])
-        XCTAssertTrue(DietEngine.matchesDiet(dishValue, for: profile(diet: .vegetarian)))
+        let dish = makeDish(tags: [.vegan])
+        XCTAssertTrue(DietEngine.matchesDiet(dish, for: profile(diet: .vegetarian)))
     }
 
     func testNoPreferenceAcceptsAnything() {
-        let dishValue = makeDish(tags: [])                     // no diet tags at all
-        XCTAssertTrue(DietEngine.matchesDiet(dishValue, for: profile(diet: .none)))
+        let dish = makeDish(tags: [])                     // no diet tags at all
+        XCTAssertTrue(DietEngine.matchesDiet(dish, for: profile(diet: .none)))
     }
 
     // MARK: - isRecommended & suggestion
