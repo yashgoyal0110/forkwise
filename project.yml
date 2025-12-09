@@ -21,5 +21,28 @@ settings:
     CURRENT_PROJECT_VERSION: "1"
     DEVELOPMENT_TEAM: ""          # set this to your Apple ID team to run on a device
 
-# TODO: rest of this module is still being wired up
-# (kept short on purpose while the shape firms up)
+targets:
+  Forkwise:
+    type: application
+    platform: iOS
+    sources:
+      - Forkwise
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.yourname.forkwise
+        TARGETED_DEVICE_FAMILY: "1,2"
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOLS: NO
+
+  ForkwiseTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - ForkwiseTests
+    dependencies:
+      - target: Forkwise
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.yourname.forkwiseTests
