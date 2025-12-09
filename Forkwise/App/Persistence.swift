@@ -38,12 +38,12 @@ struct PersistenceController {
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
 
-    /// Saves the view contextData if there are pending changes. Safe to call freely.
+    /// Saves the view context if there are pending changes. Safe to call freely.
     func save() {
-        let contextData = container.viewContext
-        guard contextData.hasChanges else { return }
+        let context = container.viewContext
+        guard context.hasChanges else { return }
         do {
-            try contextData.save()
+            try context.save()
         } catch {
             assertionFailure("Core Data save failed: \(error)")
         }
@@ -52,13 +52,13 @@ struct PersistenceController {
     /// Deletes every row in every entity - backs the "reset all data" action in
     /// Settings. Uses `NSBatchDeleteRequest` so it stays fast as data grows.
     func wipeAllData() {
-        let contextData = container.viewContext
+        let context = container.viewContext
         for entity in container.managedObjectModel.entities {
             guard let name = entity.name else { continue }
             let fetch = NSFetchRequest<NSFetchRequestResult>(entityName: name)
             let delete = NSBatchDeleteRequest(fetchRequest: fetch)
-            _ = try? contextData.execute(delete)
+            _ = try? context.execute(delete)
         }
-        contextData.reset()
+        context.reset()
     }
 }
