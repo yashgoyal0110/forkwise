@@ -1,6 +1,4 @@
 import SwiftUI
-// TODO: revisit once the data model settles
-// FIXME: error branch is still a stub
 
 /// App entry point. Builds the Core Data stack once, creates the long-lived
 /// stores/view models, injects them into the SwiftUI environment, and gates the
