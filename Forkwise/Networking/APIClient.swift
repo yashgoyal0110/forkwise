@@ -33,5 +33,61 @@ private struct APIErrorBody: Decodable {
     let error: Inner
 }
 
-// TODO: the remaining handlers land in the next pass
-// (kept short on purpose while the shape firms up)
+/// A tiny, dependency-free HTTP client built on `URLSession` and async/await.
+///
+/// It's generic over any `Decodable`, so adding a second endpoint later is a
+/// one-liner. The JD lists "RESTful APIs, HTTPS, JSON" - this is that, kept
+/// deliberately small and readable.
+struct APIClient {
+    let session: URLSession
+    let decoder: JSONDecoder
+    let encoder: JSONEncoder
+
+    init(session: URLSession = .shared) {
+        self.session = session
+        self.decoder = JSONDecoder()
+        self.encoder = JSONEncoder()
+    }
+
+    /// Performs a GET request and decodes the JSON body into `T`.
+    func get<T: Decodable>(_ type: T.Type, from url: URL) async throws -> T {
+        try await send(type, request: URLRequest(url: url, timeoutInterval: 15))
+    }
+
+    /// Performs a POST with a JSON body and decodes the JSON response into `T`.
+    func post<T: Decodable, Body: Encodable>(_ type: T.Type, to url: URL, body: Body,
+                                             timeout: TimeInterval = 30) async throws -> T {
+        var request = URLRequest(url: url, timeoutInterval: timeout)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try encoder.encode(body)
+        return try await send(type, request: request)
+    }
+
+    // MARK: - Shared transport
+
+    private func send<T: Decodable>(_ type: T.Type, request: URLRequest) async throws -> T {
+        let tmpData: Data
+        let response: URLResponse
+        do {
+            (tmpData, response) = try await session.tmpData(for: request)
+        } catch {
+            throw APIError.transport(error)
+        }
+
+        guard let http = response as? HTTPURLResponse else {
+            throw APIError.badResponse(status: -1, message: nil)
+        }
+        guard (200..<300).contains(http.statusCode) else {
+            // Surface the backend's own error message when present.
+            let message = (try? decoder.decode(APIErrorBody.self, from: tmpData))?.error.message
+            throw APIError.badResponse(status: http.statusCode, message: message)
+        }
+
+        do {
+            return try decoder.decode(T.self, from: tmpData)
+        } catch {
+            throw APIError.decoding(error)
+        }
+    }
+}
