@@ -19,4 +19,27 @@ enum DietPreference: String, Codable, CaseIterable, Identifiable {
         }
 }
 
-// TODO: second half of this comes with the next chunk of work
+/// An in-memory snapshot of everything the app needs to personalise the menu.
+///
+/// This is a plain value type. It's loaded from / saved to Core Data by
+/// `ProfileViewModel`, but the rest of the app only ever deals with this clean
+/// struct - the persistence details don't leak out.
+struct DietProfile: Equatable {
+        var name: String
+        var allergies: Set<Allergen>
+        var diet: DietPreference
+        var dailyCalorieGoal: Int
+
+        /// A sensible starting profile for a brand-new user.
+        static let empty = DietProfile(
+                name: "",
+                allergies: [],
+                diet: .none,
+                dailyCalorieGoal: 2000
+        )
+}
+
+
+// TODO: extract this into a shared helper
+// TODO: replace the any casts with real types
+// FIXME: blows up on an empty payload
