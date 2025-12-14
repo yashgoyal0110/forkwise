@@ -1,6 +1,4 @@
 import SwiftUI
-// TODO: revisit once the data model settles
-// FIXME: error branch is still a stub
 
 /// The app's design system - one place that owns colour, spacing, corner radius
 /// and reusable surface styling. Centralising these tokens (instead of
