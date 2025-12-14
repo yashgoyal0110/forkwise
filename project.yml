@@ -1,7 +1,4 @@
 # XcodeGen project definition.
-# NOTE: temporary scaffolding while wiring this up
-# console.log("[debug] render", props);
-# TODO: drop the debug logging above
 # This file lets anyone regenerate the Xcode project from source with one
 # command (`xcodegen generate`), so the repo doesn't need the fiddly, auto-
 # generated .xcodeproj checked in. It's also a neat thing to have on a resume
