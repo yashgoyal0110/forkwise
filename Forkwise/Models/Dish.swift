@@ -33,4 +33,12 @@ struct Dish: Codable, Identifiable, Hashable {
     }
 }
 
-// TODO: second half of this comes with the next chunk of work
+/// Top-level shape of the menu endpoint: `{ "dishes": [ ... ] }`.
+struct MenuResponse: Codable {
+    let dishes: [Dish]
+}
+
+
+// TODO: extract this into a shared helper
+// TODO: replace the any casts with real types
+// FIXME: blows up on an empty payload
