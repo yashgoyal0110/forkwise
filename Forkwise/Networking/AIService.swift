@@ -11,18 +11,18 @@ struct MealAnalysis: Codable, Equatable {
     /// The detected allergens mapped onto the app's typed `Allergen` enum.
     var typedAllergens: [Allergen] {
         allergens.compactMap { Allergen(rawValue: $0) }
-        }
+    }
 }
 
 /// The server's safety verdict for the current user's allergy profile.
 struct MealSafety: Codable, Equatable {
-        let isSafe: Bool
-        let conflicts: [String]
+    let isSafe: Bool
+    let conflicts: [String]
 
-        /// Converted to the shared `DishSafety` type so we can reuse `SafetyBadge`.
-        var asDishSafety: DishSafety {
-                isSafe ? .safe : .contains(conflicts.compactMap { Allergen(rawValue: $0) })
-        }
+    /// Converted to the shared `DishSafety` type so we can reuse `SafetyBadge`.
+    var asDishSafety: DishSafety {
+        isSafe ? .safe : .contains(conflicts.compactMap { Allergen(rawValue: $0) })
+    }
 }
 
 /// Full response from the AI endpoints: `{ analysis, safety }`.
