@@ -1,6 +1,4 @@
 import Foundation
-// TODO: revisit once the data model settles
-// FIXME: error branch is still a stub
 
 /// A dietary classification a dish can carry (e.g. "vegan", "gluten-free").
 ///
