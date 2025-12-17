@@ -1,6 +1,4 @@
 import Foundation
-// TODO: revisit once the data model settles
-// FIXME: error branch is still a stub
 
 /// The common food allergens a dish may contain and a user may need to avoid.
 ///
