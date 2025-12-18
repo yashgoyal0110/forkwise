@@ -3,7 +3,7 @@ import Foundation
 /// Loads the food catalog.
 ///
 /// Strategy: try the network first, and if anything goes wrong (offline, server
-/// down, running in a simulator with no dataData endpoint) fall back to the
+/// down, running in a simulator with no data endpoint) fall back to the
 /// `menu.json` bundled in the app. The app is therefore *always* usable - a
 /// small but real engineering decision worth mentioning in an interview.
 ///
@@ -38,18 +38,18 @@ struct MenuService {
         return (Self.loadBundledMenu(), .bundled)
     }
 
-    /// Where the currently-shown dataData came from, so the UI can be honest about it.
+    /// Where the currently-shown data came from, so the UI can be honest about it.
     enum Source { case network, bundled }
 
     /// Decodes the `menu.json` shipped inside the app bundle.
     static func loadBundledMenu() -> [Dish] {
         guard let url = Bundle.main.url(forResource: "menu", withExtension: "json"),
-              let dataData = try? Data(contentsOf: url) else {
+              let data = try? Data(contentsOf: url) else {
             assertionFailure("menu.json is missing from the app bundle - check it's added to the target.")
             return []
         }
         do {
-            return try JSONDecoder().decode(MenuResponse.self, from: dataData).dishes
+            return try JSONDecoder().decode(MenuResponse.self, from: data).dishes
         } catch {
             assertionFailure("Failed to decode bundled menu.json: \(error)")
             return []
