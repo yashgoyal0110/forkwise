@@ -17,42 +17,42 @@ struct ForkwiseApp: App {
     @AppStorage("reminderHour") private var reminderHour = 13
 
     init() {
-                let context = persistence.container.viewContext
-                _profileVM = StateObject(wrappedValue: ProfileViewModel(context: context))
-                _intakeVM = StateObject(wrappedValue: IntakeViewModel(context: context))
-                _favoritesVM = StateObject(wrappedValue: FavoritesViewModel(context: context))
-        }
+        let context = persistence.container.viewContext
+        _profileVM = StateObject(wrappedValue: ProfileViewModel(context: context))
+        _intakeVM = StateObject(wrappedValue: IntakeViewModel(context: context))
+        _favoritesVM = StateObject(wrappedValue: FavoritesViewModel(context: context))
+    }
 
-        var body: some Scene {
-                WindowGroup {
-                        Group {
-                                if hasOnboarded {
-                                        RootTabView()
-                                } else {
-                                        OnboardingView { withAnimation { hasOnboarded = true } }
-                                }
-                        }
-                        .environmentObject(catalog)
-                        .environmentObject(profileVM)
-                        .environmentObject(intakeVM)
-                        .environmentObject(favoritesVM)
-                        .environment(\.managedObjectContext, persistence.container.viewContext)
-                        .task { await bootstrap() }
+    var body: some Scene {
+        WindowGroup {
+            Group {
+                if hasOnboarded {
+                    RootTabView()
+                } else {
+                    OnboardingView { withAnimation { hasOnboarded = true } }
                 }
+            }
+            .environmentObject(catalog)
+            .environmentObject(profileVM)
+            .environmentObject(intakeVM)
+            .environmentObject(favoritesVM)
+            .environment(\.managedObjectContext, persistence.container.viewContext)
+            .task { await bootstrap() }
         }
+    }
 
-        /// Runs once per launch: load the catalog, then set up notifications.
-        @MainActor
-        private func bootstrap() async {
-                if catalog.dishes.isEmpty { await catalog.load() }
+    /// Runs once per launch: load the catalog, then set up notifications.
+    @MainActor
+    private func bootstrap() async {
+        if catalog.dishes.isEmpty { await catalog.load() }
 
-                guard reminderEnabled else {
-                        NotificationManager.shared.cancelMealReminder()
-                        return
-                }
-                await NotificationManager.shared.requestAuthorization()
-                let remaining = max(profileVM.profile.dailyCalorieGoal - intakeVM.caloriesToday, 0)
-                let pick = DietEngine.suggestion(from: catalog.dishes, for: profileVM.profile, remainingCalories: remaining)
-                NotificationManager.shared.scheduleMealReminder(hour: reminderHour, suggestion: pick)
+        guard reminderEnabled else {
+            NotificationManager.shared.cancelMealReminder()
+            return
         }
+        await NotificationManager.shared.requestAuthorization()
+        let remaining = max(profileVM.profile.dailyCalorieGoal - intakeVM.caloriesToday, 0)
+        let pick = DietEngine.suggestion(from: catalog.dishes, for: profileVM.profile, remainingCalories: remaining)
+        NotificationManager.shared.scheduleMealReminder(hour: reminderHour, suggestion: pick)
+    }
 }
