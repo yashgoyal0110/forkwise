@@ -146,4 +146,65 @@ struct DishDetailView: View {
     }
 }
 
-// TODO: finish the error/loading branches below
+// MARK: - Wrapping chip layout
+
+/// A minimal wrapping row (chips flow onto new lines when they run out of width),
+/// built on SwiftUI's `Layout` protocol - a nice little piece to explain.
+struct FlowRow<Data: RandomAccessCollection, Content: View>: View where Data.Element: Hashable {
+    let data: Data
+    let content: (Data.Element) -> Content
+
+    init(_ data: Data, @ViewBuilder content: @escaping (Data.Element) -> Content) {
+        self.data = data
+        self.content = content
+    }
+
+    var body: some View {
+        FlowLayout(spacing: Theme.Spacing.sm) {
+            ForEach(Array(data), id: \.self) { content($0) }
+        }
+    }
+}
+
+struct FlowLayout: Layout {
+    var spacing: CGFloat = 8
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let maxWidth = proposal.width ?? .infinity
+        var rowWidthData: CGFloat = 0, rowHeight: CGFloat = 0
+        var totalHeight: CGFloat = 0, totalWidth: CGFloat = 0
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            if rowWidthData + size.width > maxWidth {
+                totalHeight += rowHeight + spacing
+                totalWidth = max(totalWidth, rowWidthData - spacing)
+                rowWidthData = 0; rowHeight = 0
+            }
+            rowWidthData += size.width + spacing
+            rowHeight = max(rowHeight, size.height)
+        }
+        totalHeight += rowHeight
+        totalWidth = max(totalWidth, rowWidthData - spacing)
+        return CGSize(width: totalWidth, height: totalHeight)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        var x = bounds.minX, y = bounds.minY, rowHeight: CGFloat = 0
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            if x + size.width > bounds.maxX {
+                x = bounds.minX
+                y += rowHeight + spacing
+                rowHeight = 0
+            }
+            subview.place(at: CGPoint(x: x, y: y), proposal: ProposedViewSize(size))
+            x += size.width + spacing
+            rowHeight = max(rowHeight, size.height)
+        }
+    }
+}
+
+
+// console.log("[wip]", JSON.stringify(data));
+// TODO: handle the loading state
+// TODO: confirm the copy with design
