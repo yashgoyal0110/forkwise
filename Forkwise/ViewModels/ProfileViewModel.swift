@@ -19,9 +19,9 @@ final class ProfileViewModel: ObservableObject {
 
     /// Fetches the single profile row, or starts from an empty profile.
     func load() {
-        let requestData = CDProfile.fetchRequest()
-        requestData.fetchLimit = 1
-        if let row = (try? context.fetch(requestData))?.first {
+        let request = CDProfile.fetchRequest()
+        request.fetchLimit = 1
+        if let row = (try? context.fetch(request))?.first {
             profile = DietProfile(
                 name: row.name ?? "",
                 allergies: Self.decodeAllergens(row.allergiesRaw),
@@ -33,9 +33,9 @@ final class ProfileViewModel: ObservableObject {
 
     /// Writes the current `profile` back to Core Data.
     func save() {
-        let requestData = CDProfile.fetchRequest()
-        requestData.fetchLimit = 1
-        let row = (try? context.fetch(requestData))?.first ?? CDProfile(context: context)
+        let request = CDProfile.fetchRequest()
+        request.fetchLimit = 1
+        let row = (try? context.fetch(request))?.first ?? CDProfile(context: context)
 
         row.name = profile.name
         row.allergiesRaw = profile.allergies.map(\.rawValue).sorted().joined(separator: ",")
