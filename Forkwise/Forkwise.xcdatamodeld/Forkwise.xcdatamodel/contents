@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CDProfile" representedClassName="CDProfile" syncable="YES" codeGenerationType="class">
+        <attribute name="allergiesRaw" optional="YES" attributeType="String"/>
+        <attribute name="dailyCalorieGoal" optional="NO" attributeType="Integer 32" defaultValueString="2000" usesScalarValueType="YES"/>
+        <attribute name="dietRaw" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="CDIntakeEntry" representedClassName="CDIntakeEntry" syncable="YES" codeGenerationType="class">
+        <attribute name="calories" optional="NO" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="dishID" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="loggedAt" optional="NO" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="CDFavorite" representedClassName="CDFavorite" syncable="YES" codeGenerationType="class">
+        <attribute name="dishID" optional="NO" attributeType="String"/>
+        <attribute name="savedAt" optional="NO" attributeType="Date" usesScalarValueType="NO"/>
+    </entity>
+</model>
