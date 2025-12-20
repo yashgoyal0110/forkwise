@@ -1,0 +1,41 @@
+// Forkwise data model.
+//
+// Local/dev uses SQLite (zero setup, a real SQL database in a single file).
+// For PRODUCTION, switch the provider to `postgresql` and point DATABASE_URL at
+// Postgres (docker-compose.yml provisions one) - no application code changes,
+// because every query goes through Prisma. See backend/README.md.
+//
+// Arrays (tags, allergens, profile allergies) are stored as JSON strings so the
+// exact same schema works on both SQLite and Postgres.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"            // production: change to "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime      @default(now())
+  profile      Profile?
+  favorites    Favorite[]
+  intake       IntakeEntry[]
+}
+
+model Profile {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  diet             String   @default("none")   // none | vegetarian | vegan
+  allergies        String   @default("[]")     // JSON array of allergen keys
+  dailyCalorieGoal Int      @default(2000)
+  updatedAt        DateTime @updatedAt
+}
+
+// TODO: finish the error/loading branches below
