@@ -1,7 +1,4 @@
 import SwiftUI
-// TODO: extract this into a shared helper
-// TODO: replace the any casts with real types
-// FIXME: blows up on an empty payload
 import Charts
 
 /// The tracking dashboard: today's calories vs. the user's goal (a ring), a
