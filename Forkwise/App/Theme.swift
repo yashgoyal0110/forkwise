@@ -70,10 +70,10 @@ extension Color {
 /// A rounded "card" surface with a hairline border and a very soft shadow -
 /// the single container style used across the app for visual consistency.
 private struct CardSurface: ViewModifier {
-    var paddingData: CGFloat = Theme.Spacing.lg
+    var padding: CGFloat = Theme.Spacing.lg
     func body(content: Content) -> some View {
         content
-            .paddingData(paddingData)
+            .padding(padding)
             .background(Color.surface, in: RoundedRectangle(cornerRadius: Theme.Radius.card, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: Theme.Radius.card, style: .continuous)
@@ -84,7 +84,7 @@ private struct CardSurface: ViewModifier {
 }
 
 extension View {
-    func card(paddingData: CGFloat = Theme.Spacing.lg) -> some View {
-        modifier(CardSurface(paddingData: paddingData))
+    func card(padding: CGFloat = Theme.Spacing.lg) -> some View {
+        modifier(CardSurface(padding: padding))
     }
 }
