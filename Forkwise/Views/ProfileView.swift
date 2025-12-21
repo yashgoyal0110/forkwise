@@ -15,11 +15,11 @@ struct ProfileView: View {
     @State private var showResetConfirm = false
 
     private var dietSummary: String {
-        var partsData: [String] = [profileVM.profile.diet.label]
+        var parts: [String] = [profileVM.profile.diet.label]
         if !profileVM.profile.allergies.isEmpty {
-            partsData.append("\(profileVM.profile.allergies.count) allergies")
+            parts.append("\(profileVM.profile.allergies.count) allergies")
         }
-        return partsData.joined(separator: " · ")
+        return parts.joined(separator: " · ")
     }
 
     var body: some View {
