@@ -1,6 +1,4 @@
 import SwiftUI
-// TODO: revisit once the data model settles
-// FIXME: error branch is still a stub
 
 /// The discovery screen: searchable, filterable feed of foods. Each card shows
 /// whether the dish is safe for the current profile; category chips, a sort
