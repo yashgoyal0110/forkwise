@@ -1,0 +1,124 @@
+{
+  "dishes": [
+    {
+      "id": "bowl-paneer-tikka",
+      "name": "Paneer Tikka Bowl",
+      "description": "Char-grilled paneer, jeera rice, mint chutney and a side of kachumber.",
+      "category": "Bowls",
+      "price_cents": 24900,
+      "calories": 620,
+      "prep_minutes": 9,
+      "image_system_name": "bowl.fill",
+      "tags": ["vegetarian", "high_protein"],
+      "allergens": ["dairy"]
+    },
+    {
+      "id": "bowl-rajma-chawal",
+      "name": "Rajma Chawal Bowl",
+      "description": "Slow-cooked kidney beans over steamed basmati with a pickle.",
+      "category": "Bowls",
+      "price_cents": 19900,
+      "calories": 540,
+      "prep_minutes": 8,
+      "image_system_name": "bowl.fill",
+      "tags": ["vegetarian", "vegan", "gluten_free"],
+      "allergens": []
+    },
+    {
+      "id": "bowl-chicken-teriyaki",
+      "name": "Chicken Teriyaki Bowl",
+      "description": "Glazed grilled chicken, sushi rice, edamame and toasted sesame.",
+      "category": "Bowls",
+      "price_cents": 29900,
+      "calories": 680,
+      "prep_minutes": 10,
+      "image_system_name": "bowl.fill",
+      "tags": ["high_protein"],
+      "allergens": ["soy", "sesame"]
+    },
+    {
+      "id": "wrap-falafel",
+      "name": "Falafel Hummus Wrap",
+      "description": "Crispy falafel, hummus, pickled veg and tahini in a soft wrap.",
+      "category": "Wraps",
+      "price_cents": 17900,
+      "calories": 480,
+      "prep_minutes": 7,
+      "image_system_name": "takeoutbag.and.cup.and.straw.fill",
+      "tags": ["vegetarian", "vegan"],
+      "allergens": ["gluten", "sesame"]
+    },
+    {
+      "id": "wrap-chicken-caesar",
+      "name": "Chicken Caesar Wrap",
+      "description": "Grilled chicken, romaine, parmesan and creamy caesar dressing.",
+      "category": "Wraps",
+      "price_cents": 21900,
+      "calories": 560,
+      "prep_minutes": 8,
+      "image_system_name": "takeoutbag.and.cup.and.straw.fill",
+      "tags": ["high_protein"],
+      "allergens": ["gluten", "dairy", "egg"]
+    },
+    {
+      "id": "snack-peanut-chaat",
+      "name": "Roasted Peanut Chaat",
+      "description": "Roasted peanuts tossed with onion, tomato, lemon and chaat masala.",
+      "category": "Snacks",
+      "price_cents": 9900,
+      "calories": 310,
+      "prep_minutes": 5,
+      "image_system_name": "fork.knife",
+      "tags": ["vegetarian", "vegan", "gluten_free", "high_protein"],
+      "allergens": ["nuts"]
+    },
+    {
+      "id": "snack-edamame",
+      "name": "Chilli Garlic Edamame",
+      "description": "Steamed edamame tossed in chilli, garlic and sea salt.",
+      "category": "Snacks",
+      "price_cents": 12900,
+      "calories": 220,
+      "prep_minutes": 6,
+      "image_system_name": "fork.knife",
+      "tags": ["vegetarian", "vegan", "gluten_free", "low_calorie", "high_protein"],
+      "allergens": ["soy"]
+    },
+    {
+      "id": "drink-mango-lassi",
+      "name": "Mango Lassi",
+      "description": "Thick Alphonso mango lassi, lightly sweetened.",
+      "category": "Drinks",
+      "price_cents": 11900,
+      "calories": 260,
+      "prep_minutes": 3,
+      "image_system_name": "cup.and.saucer.fill",
+      "tags": ["vegetarian"],
+      "allergens": ["dairy"]
+    },
+    {
+      "id": "drink-cold-brew",
+      "name": "Cold Brew Coffee",
+      "description": "16-hour steeped cold brew over ice. Zero sugar.",
+      "category": "Drinks",
+      "price_cents": 14900,
+      "calories": 15,
+      "prep_minutes": 2,
+      "image_system_name": "cup.and.saucer.fill",
+      "tags": ["vegan", "gluten_free", "low_calorie"],
+      "allergens": []
+    },
+    {
+      "id": "dessert-choco-brownie",
+      "name": "Molten Choco Brownie",
+      "description": "Warm fudge brownie with a molten chocolate centre and walnuts.",
+      "category": "Desserts",
+      "price_cents": 15900,
+      "calories": 450,
+      "prep_minutes": 4,
+      "image_system_name": "birthday.cake.fill",
+      "tags": ["vegetarian"],
+      "allergens": ["gluten", "dairy", "egg", "nuts"]
+    }
+  ]
+}
