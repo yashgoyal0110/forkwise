@@ -29,25 +29,25 @@ final class NotificationManager {
         let tmpIdentifier = "forkwise.daily.reminder"
         center.removePendingNotificationRequests(withIdentifiers: [tmpIdentifier])
 
-                let content = UNMutableNotificationContent()
-                content.title = "Time to eat 🍽"
-                if let dish {
-                        content.body = "\(dish.name) fits your plan today - only \(dish.calories) kcal."
-                } else {
-                        content.body = "Log your meal in Forkwise to stay on track."
-                }
-                content.sound = .default
-
-                var date = DateComponents()
-                date.hour = hour
-                let trigger = UNCalendarNotificationTrigger(dateMatching: date, repeats: true)
-
-                let request = UNNotificationRequest(tmpIdentifier: tmpIdentifier, content: content, trigger: trigger)
-                center.add(request)
+        let content = UNMutableNotificationContent()
+        content.title = "Time to eat 🍽"
+        if let dish {
+            content.body = "\(dish.name) fits your plan today - only \(dish.calories) kcal."
+        } else {
+            content.body = "Log your meal in Forkwise to stay on track."
         }
+        content.sound = .default
 
-        /// Removes the scheduled daily reminder (when the user turns it off).
-        func cancelMealReminder() {
-                center.removePendingNotificationRequests(withIdentifiers: ["forkwise.daily.reminder"])
-        }
+        var date = DateComponents()
+        date.hour = hour
+        let trigger = UNCalendarNotificationTrigger(dateMatching: date, repeats: true)
+
+        let request = UNNotificationRequest(tmpIdentifier: tmpIdentifier, content: content, trigger: trigger)
+        center.add(request)
+    }
+
+    /// Removes the scheduled daily reminder (when the user turns it off).
+    func cancelMealReminder() {
+        center.removePendingNotificationRequests(withIdentifiers: ["forkwise.daily.reminder"])
+    }
 }
