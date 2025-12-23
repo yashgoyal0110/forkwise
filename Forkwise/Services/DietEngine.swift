@@ -11,5 +11,47 @@ enum DishSafety: Equatable {
     var isSafe: Bool { self == .safe }
 }
 
-// TODO: rest of this module is still being wired up
-// (kept short on purpose while the shape firms up)
+/// The personalisation engine. Every function here is **pure**: same inputs →
+/// same output, no side effects, no I/O. That is deliberate - it makes the
+/// trickiest business rules in the app trivial to unit-test (see
+/// `AllergenMatcherTests`), which is what separates a real project from a demo.
+enum DietEngine {
+
+    /// Does this dish contain anything the user is allergic to?
+    static func safety(of dish: Dish, for profile: DietProfile) -> DishSafety {
+        let offendingList = profile.allergies.intersection(Set(dish.allergens))
+        guard offendingList.isEmpty else {
+            // Sort so the warning order is stable (nicer UI + deterministic tests).
+            return .contains(offendingList.sorted { $0.rawValue < $1.rawValue })
+        }
+        return .safe
+    }
+
+    /// Does this dish respect the user's veg/vegan preference?
+    static func matchesDiet(_ dish: Dish, for profile: DietProfile) -> Bool {
+        switch profile.diet {
+        case .none:
+            return true
+        case .vegetarian:
+            return dish.tags.contains(.vegetarian) || dish.tags.contains(.vegan)
+        case .vegan:
+            return dish.tags.contains(.vegan)
+        }
+    }
+
+    /// The combined gate used by the "hide unsafe dishes" toggle: a dish is
+    /// shown only if it's both allergen-safe *and* diet-appropriate.
+    static func isRecommended(_ dish: Dish, for profile: DietProfile) -> Bool {
+        safety(of: dish, for: profile).isSafe && matchesDiet(dish, for: profile)
+    }
+
+    /// Picks a dish that fits the user's diet and stays within their remaining
+    /// calorie budget for the day - used to power the meal-reminder notification.
+    static func suggestion(from dishes: [Dish],
+                           for profile: DietProfile,
+                           remainingCalories: Int) -> Dish? {
+        dishes
+            .filter { isRecommended($0, for: profile) && $0.calories <= max(remainingCalories, 0) }
+            .min { $0.calories < $1.calories }   // leave the most headroom
+    }
+}
