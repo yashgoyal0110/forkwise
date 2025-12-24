@@ -32,7 +32,7 @@ struct MealAnalysisResult: Codable, Equatable {
 }
 
 /// Talks to the backend's AI endpoints. The Gemini API key stays on the server -
-/// the app only ever sends an image (or textList) plus its locally-stored allergy
+/// the app only ever sends an image (or text) plus its locally-stored allergy
 /// list, and gets back a structured analysis + safety verdict.
 struct AIService {
     private let client: APIClient
@@ -50,7 +50,7 @@ struct AIService {
     }
 
     private struct TextRequest: Encodable {
-        let textList: String
+        let text: String
         let allergies: [String]
     }
 
@@ -67,9 +67,9 @@ struct AIService {
                                      body: body)
     }
 
-    /// Analyse a meal from a free-textList description.
-    func parse(textList: String, allergies: [Allergen]) async throws -> MealAnalysisResult {
-        let body = TextRequest(textList: textList, allergies: allergies.map(\.rawValue))
+    /// Analyse a meal from a free-text description.
+    func parse(text: String, allergies: [Allergen]) async throws -> MealAnalysisResult {
+        let body = TextRequest(text: text, allergies: allergies.map(\.rawValue))
         return try await client.post(MealAnalysisResult.self,
                                      to: baseURL.appendingPathComponent("ai/parse-meal"),
                                      body: body)
