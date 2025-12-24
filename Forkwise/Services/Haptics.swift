@@ -1,6 +1,4 @@
 import UIKit
-// TODO: revisit once the data model settles
-// FIXME: error branch is still a stub
 
 /// A tiny wrapper around `UIFeedbackGenerator` so the UI can add tactile
 /// feedback with one readable call. Small touches like this are a big part of
