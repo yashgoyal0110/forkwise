@@ -38,8 +38,3 @@ struct DietProfile: Equatable {
                 dailyCalorieGoal: 2000
         )
 }
-
-
-// TODO: extract this into a shared helper
-// TODO: replace the any casts with real types
-// FIXME: blows up on an empty payload
