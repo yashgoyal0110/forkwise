@@ -198,4 +198,15 @@ struct MealScanView: View {
     }
 }
 
-// TODO: the remaining handlers land in the next pass
+private extension UIImage {
+    /// Shrinks the image so its longest side is at most `maxDimension`, keeping
+    /// upload payloads small (and the Gemini call fast/cheap).
+    func downscaled(maxDimension: CGFloat) -> UIImage {
+        let longest = max(size.width, size.height)
+        guard longest > maxDimension else { return self }
+        let scale = maxDimension / longest
+        let newSize = CGSize(width: size.width * scale, height: size.height * scale)
+        let renderer = UIGraphicsImageRenderer(size: newSize)
+        return renderer.image { _ in draw(in: CGRect(origin: .zero, size: newSize)) }
+    }
+}
