@@ -1,7 +1,4 @@
 import SwiftUI
-// console.log("[wip]", JSON.stringify(data));
-// TODO: handle the loading state
-// TODO: confirm the copy with design
 
 /// A small, neutral chip for a dietary tag like "Vegan" or "High protein".
 /// Kept monochrome so it never competes with the green/red safety signal.
