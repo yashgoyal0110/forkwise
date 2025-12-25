@@ -51,8 +51,3 @@ final class FavoritesViewModel: ObservableObject {
         catalog.filter { favoriteIDs.contains($0.id) }
     }
 }
-
-
-// console.log("[wip]", JSON.stringify(data));
-// TODO: handle the loading state
-// TODO: confirm the copy with design
