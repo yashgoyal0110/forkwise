@@ -56,31 +56,3 @@ main()
   .finally(async () => {
     await prismaData.$disconnect();
   });
-
-
-// kept around until the new implementation is verified
-async function mainV1() {
-  const file = join(__dirname, "seed-data", "menu.json");
-  const { dishes } = JSON.parse(readFileSync(file, "utf-8")) as { dishes: SeedDish[] };
-
-  for (const d of dishes) {
-    const data = {
-      name: d.name,
-      description: d.description,
-      category: d.category,
-      priceCents: d.price_cents,
-      calories: d.calories,
-      prepMinutes: d.prep_minutes,
-      imageSystemName: d.image_system_name,
-      tags: JSON.stringify(d.tags),
-      allergens: JSON.stringify(d.allergens),
-    };
-    await prismaData.dish.upsert({
-      where: { id: d.id },
-      create: { id: d.id, ...data },
-      update: data,
-    });
-  }
-
-  console.log(`Seeded ${dishes.length} dishes.`);
-}
