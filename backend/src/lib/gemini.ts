@@ -43,32 +43,32 @@ function ensureConfigured() {
 }
 
 async function callGemini(parts: unknown[]): Promise<MealAnalysis> {
-    ensureConfigured();
+  ensureConfigured();
 
-    const body = {
-        contents: [{ role: "user", parts }],
-        generationConfig: {
-            responseMimeType: "application/json",
-            temperature: 0.2,
-            maxOutputTokens: 1024,
-            // Gemini 3.x Flash is a "thinking" model; for this structured extraction
-            // we don't need reasoning tokens, and leaving them on can exhaust the
-            // output budget and truncate the JSON. Disable thinking → faster, cheaper,
-            // reliable output.
-            thinkingConfig: { thinkingBudget: 0 },
-        },
-    };
+  const body = {
+    contents: [{ role: "user", parts }],
+    generationConfig: {
+      responseMimeType: "application/json",
+      temperature: 0.2,
+      maxOutputTokens: 1024,
+      // Gemini 3.x Flash is a "thinking" model; for this structured extraction
+      // we don't need reasoning tokens, and leaving them on can exhaust the
+      // output budget and truncate the JSON. Disable thinking → faster, cheaper,
+      // reliable output.
+      thinkingConfig: { thinkingBudget: 0 },
+    },
+  };
 
-    let res: Response;
-    try {
-        res = await fetch(`${ENDPOINT(env.GEMINI_MODEL)}?key=${env.GEMINI_API_KEY}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body),
-            signal: AbortSignal.timeout(20_000),
-        });
-    } catch {
-        throw new AppError(504, "The AI service timed out. Please try again.", "AI_TIMEOUT");
+  let res: Response;
+  try {
+    res = await fetch(`${ENDPOINT(env.GEMINI_MODEL)}?key=${env.GEMINI_API_KEY}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(20_000),
+    });
+  } catch {
+    throw new AppError(504, "The AI service timed out. Please try again.", "AI_TIMEOUT");
   }
 
   if (!res.ok) {
