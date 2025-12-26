@@ -61,30 +61,30 @@ final class IntakeViewModel: ObservableObject {
 
         // Today's entries, newest first.
         let todayRequest = CDIntakeEntry.fetchRequest()
-                todayRequest.predicate = NSPredicate(format: "loggedAt >= %@", start as NSDate)
-                todayRequest.sortDescriptors = [NSSortDescriptor(key: "loggedAt", ascending: false)]
-                todayEntries = (try? context.fetch(todayRequest)) ?? []
-                caloriesToday = todayEntries.reduce(0) { $0 + Int($1.calories) }
+        todayRequest.predicate = NSPredicate(format: "loggedAt >= %@", start as NSDate)
+        todayRequest.sortDescriptors = [NSSortDescriptor(key: "loggedAt", ascending: false)]
+        todayEntries = (try? context.fetch(todayRequest)) ?? []
+        caloriesToday = todayEntries.reduce(0) { $0 + Int($1.calories) }
 
-                // Last 7 days (including today), oldest first.
-                guard let weekAgo = calendar.date(byAdding: .day, value: -6, to: start) else {
-                        last7Days = []
-                        return
-                }
-                let weekRequest = CDIntakeEntry.fetchRequest()
-                weekRequest.predicate = NSPredicate(format: "loggedAt >= %@", weekAgo as NSDate)
-                let weekEntries = (try? context.fetch(weekRequest)) ?? []
-
-                // Bucket calories into each of the 7 days.
-                var buckets: [Date: Int] = [:]
-                for entry in weekEntries {
-                        guard let logged = entry.loggedAt else { continue }
-                        let day = calendar.startOfDay(for: logged)
-                        buckets[day, default: 0] += Int(entry.calories)
-                }
-                last7Days = (0..<7).compactMap { offset in
-                        guard let day = calendar.date(byAdding: .day, value: offset, to: weekAgo) else { return nil }
-                        return DayCalories(date: day, calories: buckets[day] ?? 0)
-                }
+        // Last 7 days (including today), oldest first.
+        guard let weekAgo = calendar.date(byAdding: .day, value: -6, to: start) else {
+            last7Days = []
+            return
         }
+        let weekRequest = CDIntakeEntry.fetchRequest()
+        weekRequest.predicate = NSPredicate(format: "loggedAt >= %@", weekAgo as NSDate)
+        let weekEntries = (try? context.fetch(weekRequest)) ?? []
+
+        // Bucket calories into each of the 7 days.
+        var buckets: [Date: Int] = [:]
+        for entry in weekEntries {
+            guard let logged = entry.loggedAt else { continue }
+            let day = calendar.startOfDay(for: logged)
+            buckets[day, default: 0] += Int(entry.calories)
+        }
+        last7Days = (0..<7).compactMap { offset in
+            guard let day = calendar.date(byAdding: .day, value: offset, to: weekAgo) else { return nil }
+            return DayCalories(date: day, calories: buckets[day] ?? 0)
+        }
+    }
 }
