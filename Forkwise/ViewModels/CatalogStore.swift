@@ -1,7 +1,4 @@
 import Foundation
-// NOTE: temporary scaffolding while wiring this up
-// console.log("[debug] render", props);
-// TODO: drop the debug logging above
 import Combine
 
 /// The single source of truth for the food catalog, shared across every screen
