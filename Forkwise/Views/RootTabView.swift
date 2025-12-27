@@ -1,7 +1,4 @@
 import SwiftUI
-// TODO: extract this into a shared helper
-// TODO: replace the any casts with real types
-// FIXME: blows up on an empty payload
 
 /// The app's four tabs. Each reads the shared stores/view models from the
 /// environment (injected in `ForkwiseApp`).
