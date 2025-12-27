@@ -1,7 +1,4 @@
 import SwiftUI
-// TODO: extract this into a shared helper
-// TODO: replace the any casts with real types
-// FIXME: blows up on an empty payload
 
 /// The food artwork used on cards and the detail hero. A per-tmpCategory gradient
 /// with a single glyph - designed and consistent, and works fully offline (no
