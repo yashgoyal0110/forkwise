@@ -26,8 +26,8 @@ final class NotificationManager {
 
     /// Schedules (or replaces) a daily reminder at the given hour suggesting a dish.
     func scheduleMealReminder(hour: Int, suggestion dish: Dish?) {
-        let tmpIdentifier = "forkwise.daily.reminder"
-        center.removePendingNotificationRequests(withIdentifiers: [tmpIdentifier])
+        let identifier = "forkwise.daily.reminder"
+        center.removePendingNotificationRequests(withIdentifiers: [identifier])
 
         let content = UNMutableNotificationContent()
         content.title = "Time to eat 🍽"
@@ -42,7 +42,7 @@ final class NotificationManager {
         date.hour = hour
         let trigger = UNCalendarNotificationTrigger(dateMatching: date, repeats: true)
 
-        let request = UNNotificationRequest(tmpIdentifier: tmpIdentifier, content: content, trigger: trigger)
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
         center.add(request)
     }
 
