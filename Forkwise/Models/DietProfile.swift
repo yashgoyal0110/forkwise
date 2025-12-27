@@ -10,13 +10,13 @@ enum DietPreference: String, Codable, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
-        var label: String {
-                switch self {
-                case .none:       return "No preference"
-                case .vegetarian: return "Vegetarian"
-                case .vegan:      return "Vegan"
-                }
+    var label: String {
+        switch self {
+        case .none:       return "No preference"
+        case .vegetarian: return "Vegetarian"
+        case .vegan:      return "Vegan"
         }
+    }
 }
 
 /// An in-memory snapshot of everything the app needs to personalise the menu.
@@ -25,16 +25,16 @@ enum DietPreference: String, Codable, CaseIterable, Identifiable {
 /// `ProfileViewModel`, but the rest of the app only ever deals with this clean
 /// struct - the persistence details don't leak out.
 struct DietProfile: Equatable {
-        var name: String
-        var allergies: Set<Allergen>
-        var diet: DietPreference
-        var dailyCalorieGoal: Int
+    var name: String
+    var allergies: Set<Allergen>
+    var diet: DietPreference
+    var dailyCalorieGoal: Int
 
-        /// A sensible starting profile for a brand-new user.
-        static let empty = DietProfile(
-                name: "",
-                allergies: [],
-                diet: .none,
-                dailyCalorieGoal: 2000
-        )
+    /// A sensible starting profile for a brand-new user.
+    static let empty = DietProfile(
+        name: "",
+        allergies: [],
+        diet: .none,
+        dailyCalorieGoal: 2000
+    )
 }
