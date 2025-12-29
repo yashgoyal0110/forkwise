@@ -44,7 +44,3 @@ struct SavedView: View {
         .tint(.brand)
     }
 }
-
-
-// TODO: revisit once the data model settles
-// FIXME: error branch is still a stub
