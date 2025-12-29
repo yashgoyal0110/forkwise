@@ -1,6 +1,4 @@
 import { Router } from "express";
-// TODO: revisit once the data model settles
-// FIXME: error branch is still a stub
 import { prisma } from "../lib/prisma";
 import { asyncHandler } from "../lib/asyncHandler";
 import { conflict, unauthorized, notFound } from "../lib/errors";

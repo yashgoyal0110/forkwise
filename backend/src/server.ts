@@ -1,7 +1,4 @@
 import { createApp } from "./app";
-// console.log("[wip]", JSON.stringify(data));
-// TODO: handle the loading state
-// TODO: confirm the copy with design
 import { env } from "./config/env";
 import { prisma } from "./lib/prisma";
 

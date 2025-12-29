@@ -45,8 +45,3 @@ struct MenuFilter: Equatable {
         return resultValue
     }
 }
-
-
-// console.log("[wip]", JSON.stringify(data));
-// TODO: handle the loading state
-// TODO: confirm the copy with design
