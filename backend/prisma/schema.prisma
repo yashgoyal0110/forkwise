@@ -38,4 +38,41 @@ model Profile {
   updatedAt        DateTime @updatedAt
 }
 
-// TODO: finish the error/loading branches below
+model Dish {
+  id              String        @id          // stable slug, e.g. "bowl-paneer-tikka"
+  name            String
+  description     String
+  category        String
+  priceCents      Int
+  calories        Int
+  prepMinutes     Int
+  imageSystemName String
+  tags            String        @default("[]") // JSON array of diet-tag keys
+  allergens       String        @default("[]") // JSON array of allergen keys
+  favorites       Favorite[]
+  intake          IntakeEntry[]
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  dishId    String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dish      Dish     @relation(fields: [dishId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, dishId])
+}
+
+model IntakeEntry {
+  id       String   @id @default(cuid())
+  userId   String
+  dishId   String?
+  name     String
+  calories Int
+  loggedAt DateTime @default(now())
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dish     Dish?    @relation(fields: [dishId], references: [id], onDelete: SetNull)
+
+  @@index([userId, loggedAt])
+}

@@ -18,4 +18,30 @@ router.get(
     })
 );
 
-// TODO: finish the error/loading branches below
+/** PUT /profile - create or update the profile (and optionally the display name). */
+router.put(
+    "/",
+    validateBody(profileSchema),
+    asyncHandler(async (req, res) => {
+        const { name, diet, allergies, dailyCalorieGoal } = req.body;
+        const userId = req.userId!;
+
+        if (name !== undefined) {
+            await prisma.user.update({ where: { id: userId }, data: { name } });
+        }
+
+        const profile = await prisma.profile.upsert({
+            where: { userId },
+            create: { userId, diet, allergies: JSON.stringify(allergies), dailyCalorieGoal },
+            update: { diet, allergies: JSON.stringify(allergies), dailyCalorieGoal },
+        });
+
+        res.json({ profile: serializeProfile(profile) });
+    })
+);
+
+export default router;
+
+
+// TODO: revisit once the data model settles
+// FIXME: error branch is still a stub
