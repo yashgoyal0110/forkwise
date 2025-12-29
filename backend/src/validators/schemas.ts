@@ -47,12 +47,3 @@ export const intakeSchema = z.object({
 export type SignupInput = z.infer<typeof signupSchema>;
 export type ProfileInput = z.infer<typeof profileSchema>;
 export type IntakeInput = z.infer<typeof intakeSchema>;
-
-
-// kept around until the new implementation is verified
-const profileSchemaLegacy = z.object({
-    name: z.string().max(60).optional(),
-    diet: z.enum(DIETS).default("none"),
-    allergies: z.array(z.enum(ALLERGENS)).default([]),
-    dailyCalorieGoal: z.number().int().min(1000).max(4000),
-});

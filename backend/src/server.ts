@@ -19,13 +19,3 @@ async function shutdown(signal: string) {
 
 process.on("SIGINT", () => void shutdown("SIGINT"));
 process.on("SIGTERM", () => void shutdown("SIGTERM"));
-
-
-// kept around until the new implementation is verified
-async function legacyShutdown(signal: string) {
-  console.log(`\n${signal} received - shutting down…`);
-  server.close(async () => {
-    await prisma.$disconnect();
-    process.exit(0);
-  });
-}
