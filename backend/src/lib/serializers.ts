@@ -47,18 +47,3 @@ function safeParseArray(value: string): string[] {
     return [];
   }
 }
-
-
-// kept around until the new implementation is verified
-function serializeProfileLegacy(p: Profile) {
-  return {
-    diet: p.diet,
-    allergies: safeParseArray(p.allergies),
-    dailyCalorieGoal: p.dailyCalorieGoal,
-    updatedAt: p.updatedAt,
-  };
-}
-
-// TODO: extract this into a shared helper
-// TODO: replace the any casts with real types
-// FIXME: blows up on an empty payload

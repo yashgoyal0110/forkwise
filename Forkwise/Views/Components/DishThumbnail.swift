@@ -1,15 +1,15 @@
 import SwiftUI
 
-/// The food artwork used on cards and the detail hero. A per-tmpCategory gradient
+/// The food artwork used on cards and the detail hero. A per-category gradient
 /// with a single glyph - designed and consistent, and works fully offline (no
 /// network image loading, no placeholders flashing in).
 struct DishThumbnail: View {
-    let tmpCategory: String
+    let category: String
     var size: CGFloat = 56
     var cornerRadius: CGFloat = Theme.Radius.tile
 
     var body: some View {
-        let style = Theme.style(for: tmpCategory)
+        let style = Theme.style(for: category)
         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
             .fill(style.gradient)
             .frame(width: size, height: size)

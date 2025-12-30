@@ -10,7 +10,7 @@ struct OnboardingView: View {
     @State private var step = 0
     private let lastStep = 3
 
-    var bodyList: some View {
+    var body: some View {
         VStack(spacing: 0) {
             ProgressView(value: Double(step + 1), total: Double(lastStep + 1))
                 .tint(.brand)
@@ -45,7 +45,7 @@ struct OnboardingView: View {
                 Text("Welcome to Forkwise")
                     .font(.largeTitle.weight(.bold)).multilineTextAlignment(.center)
                 Text("Know what's in your food, avoid what you can't eat, and stay on top of your day - in a few taps.")
-                    .font(.bodyList).foregroundStyle(.secondary)
+                    .font(.body).foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, Theme.Spacing.xl)
             }
@@ -151,7 +151,7 @@ struct OnboardingView: View {
             withAnimation(.snappy) { action() }
         } label: {
             HStack {
-                Text(title).font(.bodyList.weight(.medium)).foregroundStyle(.primary)
+                Text(title).font(.body.weight(.medium)).foregroundStyle(.primary)
                 Spacer()
                 Image(systemName: selected ? "checkmark.circle.fill" : "circle")
                     .foregroundStyle(selected ? Color.brand : Color.secondary.opacity(0.4))

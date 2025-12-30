@@ -188,9 +188,9 @@ struct MealScanView: View {
             errorMessage = "Couldn't load that image."
             return
         }
-        let resizedValue = ui.downscaled(maxDimension: 1024)
-        previewImage = resizedValue
-        imageData = resizedValue.jpegData(compressionQuality: 0.7)
+        let resized = ui.downscaled(maxDimension: 1024)
+        previewImage = resized
+        imageData = resized.jpegData(compressionQuality: 0.7)
     }
 
     private func reset() {

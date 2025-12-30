@@ -77,10 +77,10 @@ struct TodayView: View {
             .frame(width: 180, height: 180)
             .animation(.snappy, value: progress)
 
-            let remainingData = goal - intakeVM.caloriesToday
-            Text(remainingData >= 0 ? "\(remaining) kcal left today" : "\(-remaining) kcal over goal")
+            let remaining = goal - intakeVM.caloriesToday
+            Text(remaining >= 0 ? "\(remaining) kcal left today" : "\(-remaining) kcal over goal")
                 .font(.subheadline.weight(.medium))
-                .foregroundStyle(remainingData >= 0 ? Color.brand : Color.danger)
+                .foregroundStyle(remaining >= 0 ? Color.brand : Color.danger)
         }
         .padding(.vertical, Theme.Spacing.xl)
     }

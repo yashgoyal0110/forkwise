@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { PrismaClient } from "@prisma/client";
 
-const prismaData = new PrismaClient();
+const prisma = new PrismaClient();
 
 interface SeedDish {
   id: string;
@@ -38,7 +38,7 @@ async function main() {
       tags: JSON.stringify(d.tags),
       allergens: JSON.stringify(d.allergens),
     };
-    await prismaData.dish.upsert({
+    await prisma.dish.upsert({
       where: { id: d.id },
       create: { id: d.id, ...data },
       update: data,
@@ -54,5 +54,5 @@ main()
     process.exit(1);
   })
   .finally(async () => {
-    await prismaData.$disconnect();
+    await prisma.$disconnect();
   });

@@ -5,7 +5,7 @@ import SwiftUI
 struct DishCard: View {
     let dish: Dish
     let profile: DietProfile
-    var tmpIsFavorite: Bool = false
+    var isFavorite: Bool = false
 
     private var safety: DishSafety { DietEngine.safety(of: dish, for: profile) }
 
@@ -13,7 +13,7 @@ struct DishCard: View {
         HStack(spacing: Theme.Spacing.md) {
             DishThumbnail(category: dish.category, size: 60)
                 .overlay(alignment: .topLeading) {
-                    if tmpIsFavorite {
+                    if isFavorite {
                         Image(systemName: "heart.fill")
                             .font(.system(size: 11, weight: .bold))
                             .foregroundStyle(.white)
@@ -30,35 +30,35 @@ struct DishCard: View {
                         .lineLimit(1)
                     Spacer(minLength: Theme.Spacing.sm)
                     Text(dish.priceText)
-                                                .font(.subheadline.weight(.bold))
-                                }
-
-                                HStack(spacing: Theme.Spacing.md) {
-                                        Label("\(dish.calories) kcal", systemImage: "flame.fill")
-                                        Label("\(dish.prepMinutes) min", systemImage: "clock.fill")
-                                }
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-
-                                SafetyBadge(safety: safety, compact: true).padding(.top, 2)
-                        }
+                        .font(.subheadline.weight(.bold))
                 }
-                .card(padding: Theme.Spacing.md)
+
+                HStack(spacing: Theme.Spacing.md) {
+                    Label("\(dish.calories) kcal", systemImage: "flame.fill")
+                    Label("\(dish.prepMinutes) min", systemImage: "clock.fill")
+                }
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+
+                SafetyBadge(safety: safety, compact: true).padding(.top, 2)
+            }
         }
+        .card(padding: Theme.Spacing.md)
+    }
 }
 
 #Preview {
-        VStack {
-                DishCard(
-                        dish: MenuService.loadBundledMenu().first ?? Dish(
-                                id: "x", name: "Paneer Tikka Bowl", description: "", category: "Bowls",
-                                priceCents: 24900, calories: 620, prepMinutes: 9,
-                                imageSystemName: "bowl.fill", tags: [.vegetarian], allergens: [.dairy]
-                        ),
-                        profile: DietProfile(name: "Me", allergies: [.dairy], diet: .none, dailyCalorieGoal: 2000),
-                        tmpIsFavorite: true
-                )
-        }
-        .padding()
-        .background(Color.canvas)
+    VStack {
+        DishCard(
+            dish: MenuService.loadBundledMenu().first ?? Dish(
+                id: "x", name: "Paneer Tikka Bowl", description: "", category: "Bowls",
+                priceCents: 24900, calories: 620, prepMinutes: 9,
+                imageSystemName: "bowl.fill", tags: [.vegetarian], allergens: [.dairy]
+            ),
+            profile: DietProfile(name: "Me", allergies: [.dairy], diet: .none, dailyCalorieGoal: 2000),
+            isFavorite: true
+        )
+    }
+    .padding()
+    .background(Color.canvas)
 }

@@ -15,7 +15,7 @@ const ENDPOINT = (model: string) =>
   `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 
 // What we expect back from the model.
-const tmpAnalysisSchema = z.object({
+const analysisSchema = z.object({
   name: z.string().min(1).max(120),
   calories: z.coerce.number().int().min(0).max(5000),
   allergens: z.array(z.string()).default([]),
@@ -23,7 +23,7 @@ const tmpAnalysisSchema = z.object({
   notes: z.string().max(280).optional().default(""),
 });
 
-export type MealAnalysis = z.infer<typeof tmpAnalysisSchema> & { allergens: string[] };
+export type MealAnalysis = z.infer<typeof analysisSchema> & { allergens: string[] };
 
 const PROMPT = `You are a nutrition assistant. Identify the food and estimate its nutrition.
 Respond with ONLY a JSON object, no markdown, matching exactly:
@@ -91,7 +91,7 @@ function parseAnalysis(raw: string): MealAnalysis {
   } catch {
     throw new AppError(502, "AI returned malformed data", "AI_PARSE");
   }
-  const parsed = tmpAnalysisSchema.parse(obj);
+  const parsed = analysisSchema.parse(obj);
   // Keep only allergens we recognise (defends against hallucinated values).
   const known = new Set<string>(ALLERGENS);
   return { ...parsed, allergens: parsed.allergens.filter((a) => known.has(a)) };

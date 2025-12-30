@@ -19,11 +19,11 @@ const schema = z.object({
   GEMINI_MODEL: z.string().default("gemini-3.5-flash"),
 });
 
-const parsedList = schema.safeParse(process.env);
-if (!parsedList.success) {
+const parsed = schema.safeParse(process.env);
+if (!parsed.success) {
   console.error("❌ Invalid environment configuration:");
-  console.error(parsedList.error.flatten().fieldErrors);
+  console.error(parsed.error.flatten().fieldErrors);
   process.exit(1);
 }
 
-export const env = parsedList.data;
+export const env = parsed.data;

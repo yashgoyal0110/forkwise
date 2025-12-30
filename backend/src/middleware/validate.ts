@@ -15,7 +15,3 @@ export const validateBody =
     req.body = result.data;
     next();
   };
-
-
-// TODO: revisit once the data model settles
-// FIXME: error branch is still a stub

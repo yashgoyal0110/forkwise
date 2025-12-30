@@ -19,10 +19,10 @@ enum DietEngine {
 
     /// Does this dish contain anything the user is allergic to?
     static func safety(of dish: Dish, for profile: DietProfile) -> DishSafety {
-        let offendingList = profile.allergies.intersection(Set(dish.allergens))
-        guard offendingList.isEmpty else {
+        let offending = profile.allergies.intersection(Set(dish.allergens))
+        guard offending.isEmpty else {
             // Sort so the warning order is stable (nicer UI + deterministic tests).
-            return .contains(offendingList.sorted { $0.rawValue < $1.rawValue })
+            return .contains(offending.sorted { $0.rawValue < $1.rawValue })
         }
         return .safe
     }

@@ -19,7 +19,7 @@ struct MenuFilter: Equatable {
     var isActive: Bool { category != nil || onlySafe || sort != .recommended }
 
     func apply(to dishes: [Dish], for profile: DietProfile) -> [Dish] {
-        var resultValue = dishes.filter { dish in
+        var result = dishes.filter { dish in
             let matchesSearch = searchText.isEmpty
                 || dish.name.localizedCaseInsensitiveContains(searchText)
                 || dish.category.localizedCaseInsensitiveContains(searchText)
@@ -31,17 +31,17 @@ struct MenuFilter: Equatable {
         switch sort {
         case .recommended:
             // Recommended dishes first, then by calories ascending within each group.
-            resultValue.sort { a, b in
+            result.sort { a, b in
                 let ra = DietEngine.isRecommended(a, for: profile)
                 let rb = DietEngine.isRecommended(b, for: profile)
                 if ra != rb { return ra && !rb }
                 return a.calories < b.calories
             }
         case .caloriesLow:
-            resultValue.sort { $0.calories < $1.calories }
+            result.sort { $0.calories < $1.calories }
         case .priceLow:
-            resultValue.sort { $0.priceCents < $1.priceCents }
+            result.sort { $0.priceCents < $1.priceCents }
         }
-        return resultValue
+        return result
     }
 }

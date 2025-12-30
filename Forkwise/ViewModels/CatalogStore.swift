@@ -27,9 +27,9 @@ final class CatalogStore: ObservableObject {
     func load() async {
         isLoading = true
         errorMessage = nil
-        let resultList = await service.loadMenu()
-        dishes = resultList.dishes
-        source = resultList.source
+        let result = await service.loadMenu()
+        dishes = result.dishes
+        source = result.source
         if dishes.isEmpty { errorMessage = "No dishes could be loaded." }
         isLoading = false
     }

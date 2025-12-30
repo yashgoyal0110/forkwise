@@ -19,8 +19,8 @@ final class FavoritesViewModel: ObservableObject {
     }
 
     func reload() {
-        let requestList = CDFavorite.fetchRequest()
-        let rows = (try? context.fetch(requestList)) ?? []
+        let request = CDFavorite.fetchRequest()
+        let rows = (try? context.fetch(request)) ?? []
         favoriteIDs = Set(rows.compactMap { $0.dishID })
     }
 
@@ -40,9 +40,9 @@ final class FavoritesViewModel: ObservableObject {
     }
 
     private func remove(_ dishID: String) {
-        let requestList = CDFavorite.fetchRequest()
-        requestList.predicate = NSPredicate(format: "dishID == %@", dishID)
-        for row in (try? context.fetch(requestList)) ?? [] { context.delete(row) }
+        let request = CDFavorite.fetchRequest()
+        request.predicate = NSPredicate(format: "dishID == %@", dishID)
+        for row in (try? context.fetch(request)) ?? [] { context.delete(row) }
         favoriteIDs.remove(dishID)
     }
 

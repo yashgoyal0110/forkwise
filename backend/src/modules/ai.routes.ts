@@ -10,7 +10,7 @@ const router = Router();
 router.use(aiLimiter);
 
 /** Shapes the response: the AI's analysis + a safety verdict for this user. */
-function build(analysis: MealAnalysis, allergies: string[]) {
+function buildResult(analysis: MealAnalysis, allergies: string[]) {
   return { analysis, safety: computeSafety(analysis.allergens, allergies) };
 }
 
@@ -27,7 +27,7 @@ router.post(
   asyncHandler(async (req, res) => {
     const { imageBase64, mimeType, allergies } = req.body;
     const analysis = await analyzeMealImage(imageBase64, mimeType);
-    res.json(build(analysis, allergies));
+    res.json(buildResult(analysis, allergies));
   })
 );
 
@@ -42,7 +42,7 @@ router.post(
   asyncHandler(async (req, res) => {
     const { text, allergies } = req.body;
     const analysis = await parseMealText(text);
-    res.json(build(analysis, allergies));
+    res.json(buildResult(analysis, allergies));
   })
 );
 

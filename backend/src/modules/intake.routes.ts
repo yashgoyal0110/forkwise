@@ -46,19 +46,19 @@ router.get(
     });
 
     // Bucket calories into each day in range (zero-filled).
-    const bucketsList = new Map<string, number>();
+    const buckets = new Map<string, number>();
     for (let i = 0; i < days; i++) {
       const d = new Date(start);
       d.setDate(start.getDate() + i);
-      bucketsList.set(dayKey(d), 0);
+      buckets.set(dayKey(d), 0);
     }
     for (const e of entries) {
       const key = dayKey(e.loggedAt);
-      bucketsList.set(key, (bucketsList.get(key) ?? 0) + e.calories);
+      buckets.set(key, (buckets.get(key) ?? 0) + e.calories);
     }
 
     res.json({
-      summary: [...bucketsList.entries()].map(([date, calories]) => ({ date, calories })),
+      summary: [...buckets.entries()].map(([date, calories]) => ({ date, calories })),
     });
   })
 );

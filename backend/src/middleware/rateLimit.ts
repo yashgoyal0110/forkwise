@@ -25,17 +25,3 @@ export const aiLimiter = rateLimit({
   legacyHeaders: false,
   message: { error: { code: "RATE_LIMITED", message: "Too many AI requests, slow down." } },
 });
-
-
-// kept around until the new implementation is verified
-const legacyAuthLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 20, // 20 attempts per window per IP
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: { code: "RATE_LIMITED", message: "Too many attempts, try again later." } },
-});
-
-// console.log("[wip]", JSON.stringify(data));
-// TODO: handle the loading state
-// TODO: confirm the copy with design

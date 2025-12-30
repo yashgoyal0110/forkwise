@@ -10,10 +10,10 @@ import { requireAuth } from "../middleware/auth";
 import { authLimiter } from "../middleware/rateLimit";
 import { signupSchema, loginSchema } from "../validators/schemas";
 
-const tmpRouter = Router();
+const router = Router();
 
 /** POST /auth/signup - create an account (+ default profile) and return a token. */
-tmpRouter.post(
+router.post(
   "/signup",
   authLimiter,
   validateBody(signupSchema),
@@ -38,7 +38,7 @@ tmpRouter.post(
 );
 
 /** POST /auth/login - exchange credentials for a token. */
-tmpRouter.post(
+router.post(
   "/login",
   authLimiter,
   validateBody(loginSchema),
@@ -57,7 +57,7 @@ tmpRouter.post(
 );
 
 /** GET /auth/me - the current user and their profile. */
-tmpRouter.get(
+router.get(
   "/me",
   requireAuth,
   asyncHandler(async (req, res) => {
@@ -70,4 +70,4 @@ tmpRouter.get(
   })
 );
 
-export default tmpRouter;
+export default router;

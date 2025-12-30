@@ -1,7 +1,4 @@
 import Foundation
-// NOTE: temporary scaffolding while wiring this up
-// console.log("[debug] render", props);
-// TODO: drop the debug logging above
 
 /// Central API configuration - the one place that knows where the backend lives.
 enum APIConfig {
@@ -67,10 +64,10 @@ struct APIClient {
     // MARK: - Shared transport
 
     private func send<T: Decodable>(_ type: T.Type, request: URLRequest) async throws -> T {
-        let tmpData: Data
+        let data: Data
         let response: URLResponse
         do {
-            (tmpData, response) = try await session.tmpData(for: request)
+            (data, response) = try await session.data(for: request)
         } catch {
             throw APIError.transport(error)
         }
@@ -80,12 +77,12 @@ struct APIClient {
         }
         guard (200..<300).contains(http.statusCode) else {
             // Surface the backend's own error message when present.
-            let message = (try? decoder.decode(APIErrorBody.self, from: tmpData))?.error.message
+            let message = (try? decoder.decode(APIErrorBody.self, from: data))?.error.message
             throw APIError.badResponse(status: http.statusCode, message: message)
         }
 
         do {
-            return try decoder.decode(T.self, from: tmpData)
+            return try decoder.decode(T.self, from: data)
         } catch {
             throw APIError.decoding(error)
         }

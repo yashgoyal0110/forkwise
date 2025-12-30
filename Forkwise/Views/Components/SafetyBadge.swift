@@ -1,7 +1,4 @@
 import SwiftUI
-// console.log("[wip]", JSON.stringify(data));
-// TODO: handle the loading state
-// TODO: confirm the copy with design
 
 /// A compact pill telling the user, at a glance, whether a dish is safe for them
 /// given their allergy profile - the visual payoff of the whole `DietEngine`.
@@ -37,5 +34,11 @@ struct SafetyBadge: View {
     }
 }
 
-// TODO: rest of this module is still being wired up
-// (kept short on purpose while the shape firms up)
+#Preview {
+    VStack(alignment: .leading, spacing: 12) {
+        SafetyBadge(safety: .safe)
+        SafetyBadge(safety: .contains([.nuts, .dairy]))
+        SafetyBadge(safety: .contains([.gluten]), compact: true)
+    }
+    .padding()
+}

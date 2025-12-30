@@ -11,9 +11,9 @@ export const requireAuth = asyncHandler(async (req, _res, next) => {
   if (!header || !header.startsWith("Bearer ")) {
     throw unauthorized("Missing or malformed Authorization header");
   }
-  const tokenList = header.slice("Bearer ".length).trim();
+  const token = header.slice("Bearer ".length).trim();
   try {
-    const payload = verifyToken(tokenList);
+    const payload = verifyToken(token);
     req.userId = payload.sub;
     next();
   } catch {
