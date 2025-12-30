@@ -203,8 +203,3 @@ struct FlowLayout: Layout {
         }
     }
 }
-
-
-// console.log("[wip]", JSON.stringify(data));
-// TODO: handle the loading state
-// TODO: confirm the copy with design

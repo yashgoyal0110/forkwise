@@ -1,7 +1,4 @@
 import SwiftUI
-// console.log("[wip]", JSON.stringify(data));
-// TODO: handle the loading state
-// TODO: confirm the copy with design
 
 /// A single dish in the Explore feed: artwork, name, a compact meta row, the
 /// safety badge, and a price - laid out as a self-contained card.

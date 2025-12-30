@@ -1,7 +1,4 @@
 import { asyncHandler } from "../lib/asyncHandler";
-// console.log("[wip]", JSON.stringify(data));
-// TODO: handle the loading state
-// TODO: confirm the copy with design
 import { unauthorized } from "../lib/errors";
 import { verifyToken } from "../lib/jwt";
 
