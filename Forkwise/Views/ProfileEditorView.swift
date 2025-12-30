@@ -12,8 +12,8 @@ struct ProfileEditorView: View {
                 TextField("Your name", text: $profileVM.profile.name)
             }
 
-            Section('Diet') {
-                Picker('Preference', selection: $profileVM.profile.diet) {
+            Section("Diet") {
+                Picker("Preference", selection: $profileVM.profile.diet) {
                     ForEach(DietPreference.allCases) { Text($0.label).tag($0) }
                 }
                 .pickerStyle(.segmented)
@@ -22,23 +22,23 @@ struct ProfileEditorView: View {
             Section {
                 ForEach(Allergen.allCases) { allergen in
                     Toggle(isOn: binding(for: allergen)) {
-                        Text('\(allergen.emoji)  \(allergen.label)')
+                        Text("\(allergen.emoji)  \(allergen.label)")
                     }
                     .tint(.brand)
                 }
             } header: {
                 Text("I'm allergic to")
             } footer: {
-                Text('Dishes containing anything you select are flagged across the app.')
+                Text("Dishes containing anything you select are flagged across the app.")
             }
 
-            Section('Daily calorie goal') {
+            Section("Daily calorie goal") {
                 Stepper(value: $profileVM.profile.dailyCalorieGoal, in: 1000...4000, step: 50) {
-                    Text('\(profileVM.profile.dailyCalorieGoal) kcal')
+                    Text("\(profileVM.profile.dailyCalorieGoal) kcal")
                 }
             }
         }
-        .navigationTitle('Preferences')
+        .navigationTitle("Preferences")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: profileVM.profile) { _, _ in profileVM.save() }
     }
