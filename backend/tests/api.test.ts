@@ -14,23 +14,23 @@ describe("Forkwise API", () => {
     expect(res.body.status).toBe("ok");
   });
 
-    it("returns a 404 with a consistent error shape for unknown routes", async () => {
-        const res = await request(app).get("/api/v1/does-not-exist");
-        expect(res.status).toBe(404);
-        expect(res.body.error.code).toBe("NOT_FOUND");
-    });
+  it("returns a 404 with a consistent error shape for unknown routes", async () => {
+    const res = await request(app).get("/api/v1/does-not-exist");
+    expect(res.status).toBe(404);
+    expect(res.body.error.code).toBe("NOT_FOUND");
+  });
 
-    it("rejects signup with an invalid body (400 + validation details)", async () => {
-        const res = await request(app)
-            .post("/api/v1/auth/signup")
-            .send({ email: "not-an-email", password: "short" });
-        expect(res.status).toBe(400);
-        expect(res.body.error.code).toBe("VALIDATION_ERROR");
-    });
+  it("rejects signup with an invalid body (400 + validation details)", async () => {
+    const res = await request(app)
+      .post("/api/v1/auth/signup")
+      .send({ email: "not-an-email", password: "short" });
+    expect(res.status).toBe(400);
+    expect(res.body.error.code).toBe("VALIDATION_ERROR");
+  });
 
-    it("requires a bearer token on protected routes", async () => {
-        const res = await request(app).get("/api/v1/profile");
-        expect(res.status).toBe(401);
-        expect(res.body.error.code).toBe("UNAUTHORIZED");
-    });
+  it("requires a bearer token on protected routes", async () => {
+    const res = await request(app).get("/api/v1/profile");
+    expect(res.status).toBe(401);
+    expect(res.body.error.code).toBe("UNAUTHORIZED");
+  });
 });

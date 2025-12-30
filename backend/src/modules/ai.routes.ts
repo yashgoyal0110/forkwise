@@ -26,9 +26,9 @@ router.post(
   validateBody(analyzeMealSchema),
   asyncHandler(async (req, res) => {
     const { imageBase64, mimeType, allergies } = req.body;
-        const analysis = await analyzeMealImage(imageBase64, mimeType);
-        res.json(build(analysis, allergies));
-    })
+    const analysis = await analyzeMealImage(imageBase64, mimeType);
+    res.json(build(analysis, allergies));
+  })
 );
 
 /**
@@ -37,13 +37,13 @@ router.post(
  * Same, but from a free-text description like "2 rotis, dal and a mango lassi".
  */
 router.post(
-    "/parse-meal",
-    validateBody(parseMealSchema),
-    asyncHandler(async (req, res) => {
-        const { text, allergies } = req.body;
-        const analysis = await parseMealText(text);
-        res.json(build(analysis, allergies));
-    })
+  "/parse-meal",
+  validateBody(parseMealSchema),
+  asyncHandler(async (req, res) => {
+    const { text, allergies } = req.body;
+    const analysis = await parseMealText(text);
+    res.json(build(analysis, allergies));
+  })
 );
 
 export default router;
