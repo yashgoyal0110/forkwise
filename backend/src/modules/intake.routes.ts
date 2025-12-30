@@ -20,25 +20,25 @@ const serializeEntry = (e: {
 router.get(
   "/",
   asyncHandler(async (req, res) => {
-    const days = clampDays(req.query.days)
-    const since = startOfDay(new Date())
-    since.setDate(since.getDate() - (days - 1))
+    const days = clampDays(req.query.days);
+    const since = startOfDay(new Date());
+    since.setDate(since.getDate() - (days - 1));
 
     const entries = await prisma.intakeEntry.findMany({
       where: { userId: req.userId!, loggedAt: { gte: since } },
       orderBy: { loggedAt: "desc" },
-    })
-    res.json({ entries: entries.map(serializeEntry) })
+    });
+    res.json({ entries: entries.map(serializeEntry) });
   })
-)
+);
 
 /** GET /intake/summary?days=7 - per-day calorie totals for the dashboard chart. */
 router.get(
   "/summary",
   asyncHandler(async (req, res) => {
-    const days = clampDays(req.query.days)
-    const start = startOfDay(new Date())
-    start.setDate(start.getDate() - (days - 1))
+    const days = clampDays(req.query.days);
+    const start = startOfDay(new Date());
+    start.setDate(start.getDate() - (days - 1));
 
     const entries = await prisma.intakeEntry.findMany({
       where: { userId: req.userId!, loggedAt: { gte: start } },

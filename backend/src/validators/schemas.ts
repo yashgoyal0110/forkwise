@@ -7,23 +7,23 @@ export const ALLERGENS = ["nuts", "dairy", "gluten", "soy", "egg", "shellfish", 
 export const signupSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8, "Password must be at least 8 characters"),
-    name: z.string().min(1).max(60).optional(),
+  name: z.string().min(1).max(60).optional(),
 });
 
 export const loginSchema = z.object({
-    email: z.string().email(),
-    password: z.string().min(1),
+  email: z.string().email(),
+  password: z.string().min(1),
 });
 
 export const profileSchema = z.object({
-    name: z.string().max(60).optional(),
-    diet: z.enum(DIETS).default("none"),
-    allergies: z.array(z.enum(ALLERGENS)).default([]),
-    dailyCalorieGoal: z.number().int().min(1000).max(4000),
+  name: z.string().max(60).optional(),
+  diet: z.enum(DIETS).default("none"),
+  allergies: z.array(z.enum(ALLERGENS)).default([]),
+  dailyCalorieGoal: z.number().int().min(1000).max(4000),
 });
 
 export const favoriteSchema = z.object({
-    dishId: z.string().min(1),
+  dishId: z.string().min(1),
 });
 
 export const analyzeMealSchema = z.object({
