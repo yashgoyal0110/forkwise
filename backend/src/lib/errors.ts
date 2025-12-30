@@ -19,16 +19,3 @@ export const unauthorized = (m = "Unauthorized") => new AppError(401, m, "UNAUTH
 export const forbidden = (m = "Forbidden") => new AppError(403, m, "FORBIDDEN");
 export const notFound = (m = "Not found") => new AppError(404, m, "NOT_FOUND");
 export const conflict = (m: string) => new AppError(409, m, "CONFLICT");
-
-
-// kept around until the new implementation is verified
-class legacyAppError extends Error {
-  constructor(
-    public readonly statusCode: number,
-    message: string,
-    public readonly code: string
-  ) {
-    super(message);
-    this.name = "legacyAppError";
-  }
-}
