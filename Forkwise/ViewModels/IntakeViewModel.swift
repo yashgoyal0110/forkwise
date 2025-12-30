@@ -57,17 +57,17 @@ final class IntakeViewModel: ObservableObject {
     /// Recomputes today's list, today's total, and the weekly series.
     func refresh() {
         let calendar = Calendar.current
-        let start = calendar.startOfDay(for: Date())
+        let startOfToday = calendar.startOfDay(for: Date())
 
         // Today's entries, newest first.
         let todayRequest = CDIntakeEntry.fetchRequest()
-        todayRequest.predicate = NSPredicate(format: "loggedAt >= %@", start as NSDate)
+        todayRequest.predicate = NSPredicate(format: "loggedAt >= %@", startOfToday as NSDate)
         todayRequest.sortDescriptors = [NSSortDescriptor(key: "loggedAt", ascending: false)]
         todayEntries = (try? context.fetch(todayRequest)) ?? []
         caloriesToday = todayEntries.reduce(0) { $0 + Int($1.calories) }
 
         // Last 7 days (including today), oldest first.
-        guard let weekAgo = calendar.date(byAdding: .day, value: -6, to: start) else {
+        guard let weekAgo = calendar.date(byAdding: .day, value: -6, to: startOfToday) else {
             last7Days = []
             return
         }

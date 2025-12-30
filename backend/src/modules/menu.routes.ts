@@ -11,8 +11,8 @@ router.get(
   "/",
   asyncHandler(async (req, res) => {
     const where = typeof req.query.category === "string" ? { category: req.query.category } : {};
-    const dishesData = await prisma.dish.findMany({ where, orderBy: { name: "asc" } });
-    res.json({ dishesData: dishesData.map(serializeDish) });
+    const dishes = await prisma.dish.findMany({ where, orderBy: { name: "asc" } });
+    res.json({ dishes: dishes.map(serializeDish) });
   })
 );
 

@@ -5,16 +5,16 @@ import profileRoutes from "../modules/profile.routes";
 import favoritesRoutes from "../modules/favorites.routes";
 import intakeRoutes from "../modules/intake.routes";
 
-const routerList = Router();
+const router = Router();
 
-routerList.get("/health", (_req, res) => {
+router.get("/health", (_req, res) => {
   res.json({ status: "ok", uptime: process.uptime() });
 });
 
-routerList.use("/auth", authRoutes);
-routerList.use("/menu", menuRoutes);
-routerList.use("/profile", profileRoutes);
-routerList.use("/favorites", favoritesRoutes);
-routerList.use("/intake", intakeRoutes);
+router.use("/auth", authRoutes);
+router.use("/menu", menuRoutes);
+router.use("/profile", profileRoutes);
+router.use("/favorites", favoritesRoutes);
+router.use("/intake", intakeRoutes);
 
-export default routerList;
+export default router;
