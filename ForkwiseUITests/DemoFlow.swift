@@ -99,21 +99,31 @@ final class DemoFlow: XCTestCase {
     }
 
     private func aiMealLogging(_ app: XCUIApplication) {
-        tap(app.buttons["logWithAI"]); beat(1.6)            // opens on the Photo option
-        tap(app.segmentedControls.buttons["Describe"]); beat(1.1)
+        // Example 1 — trips the dairy allergy → AI returns an UNSAFE verdict.
+        aiExample(app, meal: "2 rotis, dal and a mango lassi", showPhotoOption: true)
+        // Example 2 — allergen-free → AI returns a SAFE verdict.
+        aiExample(app, meal: "grilled vegetable skewers with steamed rice", showPhotoOption: false)
+    }
+
+    /// One full AI pass: open the sheet, (optionally linger on the Photo option),
+    /// describe a meal, analyze it with Gemini (server-side), show the verdict,
+    /// and log it. Reopening the sheet each time keeps the state clean.
+    private func aiExample(_ app: XCUIApplication, meal: String, showPhotoOption: Bool) {
+        tap(app.buttons["logWithAI"]); beat(showPhotoOption ? 2.2 : 1.2)   // sheet opens on Photo
+        tap(app.segmentedControls.buttons["Describe"]); beat(1.0)
 
         var field = app.textViews["aiMealText"]
         if !field.waitForExistence(timeout: 3) { field = app.textFields["aiMealText"] }
         if field.waitForExistence(timeout: 3), field.isHittable {
             field.tap()
-            field.typeText("2 rotis, dal and a mango lassi")
+            field.typeText(meal)
         }
-        beat(1.0)
+        beat(0.9)
         tap(app.buttons["aiAnalyze"])
         _ = app.buttons["aiLogIt"].waitForExistence(timeout: 30)  // live Gemini round-trip
-        beat(3.0)                                           // show the AI result card
-        tap(app.buttons["aiLogIt"]); beat(1.6)
-        tap(app.buttons["Close"]); beat(1.4)
+        beat(3.2)                                           // show the AI result card + verdict
+        tap(app.buttons["aiLogIt"]); beat(1.4)
+        tap(app.buttons["Close"]); beat(1.3)
     }
 
     private func profile(_ app: XCUIApplication) {

@@ -69,7 +69,8 @@ jobs:
           UDID: ${{ steps.sim.outputs.udid }}
           APP_ID: com.yourname.forkwise
         run: |
-          app_running() { xcrun simctl spawn "$UDID" launchctl list 2>/dev/null | grep -q "$APP_ID"; }
+          # Match the app ONLY — the UI-test runner id also contains "forkwise".
+          app_running() { xcrun simctl spawn "$UDID" launchctl list 2>/dev/null | grep "$APP_ID" | grep -vq "UITests"; }
 
           ( xcodebuild test-without-building \
               -project Forkwise.xcodeproj -scheme Forkwise \
