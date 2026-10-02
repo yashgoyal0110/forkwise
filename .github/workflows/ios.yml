@@ -60,61 +60,51 @@ jobs:
             -derivedDataPath build/DD \
             CODE_SIGNING_ALLOWED=NO | tail -40
 
-      - name: Start recording
-        run: |
-          date +%s.%N > rec.start
-          xcrun simctl io "${{ steps.sim.outputs.udid }}" recordVideo --codec=h264 --force "$PWD/forkwise-demo.mp4" &
-          echo $! > rec.pid
-          sleep 2
-
-      # Reuse the build above — no rebuild — and run only the UI walkthrough.
-      - name: UI walkthrough
+      # Run the UI test in the background and record ONLY while the app is alive:
+      # start recording once the app process appears, stop the moment it
+      # terminates at test end. No xcodebuild spin-up or teardown in the video.
+      - name: Record UI walkthrough
         continue-on-error: true
+        env:
+          UDID: ${{ steps.sim.outputs.udid }}
+          APP_ID: com.yourname.forkwise
         run: |
-          set -o pipefail
-          xcodebuild test-without-building \
-            -project Forkwise.xcodeproj \
-            -scheme Forkwise \
-            -destination "id=${{ steps.sim.outputs.udid }}" \
-            -only-testing:ForkwiseUITests \
-            -derivedDataPath build/DD \
-            CODE_SIGNING_ALLOWED=NO 2>&1 | tee uitest.log | tail -n 40
+          app_running() { xcrun simctl spawn "$UDID" launchctl list 2>/dev/null | grep -q "$APP_ID"; }
 
-      - name: Stop recording
-        if: always()
-        run: |
-          if [ -f rec.pid ]; then kill -INT "$(cat rec.pid)" || true; fi
-          sleep 4
+          ( xcodebuild test-without-building \
+              -project Forkwise.xcodeproj -scheme Forkwise \
+              -destination "id=$UDID" -only-testing:ForkwiseUITests \
+              -derivedDataPath build/DD CODE_SIGNING_ALLOWED=NO > uitest.log 2>&1 ) &
+          TEST_PID=$!
+
+          echo "Waiting for the app to launch…"
+          for _ in $(seq 1 240); do
+            app_running && { echo "App is up."; break; }
+            kill -0 $TEST_PID 2>/dev/null || { echo "Test exited before app launch."; break; }
+            sleep 1
+          done
+
+          xcrun simctl io "$UDID" recordVideo --codec=h264 --force "$PWD/forkwise-demo.mp4" &
+          REC_PID=$!
+
+          echo "Recording until the app terminates…"
+          for _ in $(seq 1 360); do
+            app_running || { echo "App terminated — stopping."; break; }
+            kill -0 $TEST_PID 2>/dev/null || { echo "Test process finished."; break; }
+            sleep 1
+          done
+
+          sleep 1
+          kill -INT $REC_PID 2>/dev/null || true
+          sleep 3
+          wait $TEST_PID || true
+          tail -n 40 uitest.log || true
           ls -lh forkwise-demo.mp4 || true
-
-      # Trim the recording to exactly the active window using the markers the
-      # UI test printed, cutting xcodebuild's spin-up and teardown.
-      - name: Trim video to active window
-        if: always()
-        run: |
-          REC_START=$(cat rec.start 2>/dev/null || echo "")
-          START=$(grep -hoE "FORKWISE_MARK START [0-9.]+" uitest.log 2>/dev/null | head -1 | awk '{print $3}')
-          END=$(grep -hoE "FORKWISE_MARK END [0-9.]+" uitest.log 2>/dev/null | tail -1 | awk '{print $3}')
-          echo "REC_START=$REC_START START=$START END=$END"
-          if [ -z "$REC_START" ] || [ -z "$START" ] || [ -z "$END" ]; then
-            echo "Markers missing — keeping the full video."
-            cp forkwise-demo.mp4 forkwise-demo-trimmed.mp4 || true
-            exit 0
-          fi
-          command -v ffmpeg >/dev/null || brew install ffmpeg
-          OFFSET=$(python3 -c "print(max(0.0, $START - $REC_START - 1.5))")
-          DUR=$(python3 -c "print(max(1.0, $END - $START + 2.5))")
-          echo "Trimming: start=$OFFSET dur=$DUR"
-          ffmpeg -y -ss "$OFFSET" -i forkwise-demo.mp4 -t "$DUR" -an \
-            -c:v libx264 -preset veryfast -crf 20 -pix_fmt yuv420p forkwise-demo-trimmed.mp4
-          ls -lh forkwise-demo-trimmed.mp4 || true
 
       - name: Upload demo video
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: forkwise-demo-video
-          path: |
-            forkwise-demo-trimmed.mp4
-            forkwise-demo.mp4
+          path: forkwise-demo.mp4
           if-no-files-found: warn
