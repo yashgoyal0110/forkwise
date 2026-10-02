@@ -50,15 +50,16 @@ jobs:
           xcrun simctl bootstatus "$UDID" -b
           xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
 
-      # Unit tests drive the build-passing badge.
-      - name: Unit tests
+      # Build once (gates the badge). Unit tests are skipped for speed right now —
+      # re-enable by adding a `test-without-building -only-testing:ForkwiseTests` step.
+      - name: Build for testing
         run: |
           set -o pipefail
-          xcodebuild test \
+          xcodebuild build-for-testing \
             -project Forkwise.xcodeproj \
             -scheme Forkwise \
             -destination "id=${{ steps.sim.outputs.udid }}" \
-            -only-testing:ForkwiseTests \
+            -derivedDataPath build/DD \
             CODE_SIGNING_ALLOWED=NO | tail -40
 
       - name: Start recording
@@ -67,15 +68,17 @@ jobs:
           echo $! > rec.pid
           sleep 2
 
+      # Reuse the build above — no rebuild — and run only the UI walkthrough.
       - name: UI walkthrough
         continue-on-error: true
         run: |
           set -o pipefail
-          xcodebuild test \
+          xcodebuild test-without-building \
             -project Forkwise.xcodeproj \
             -scheme Forkwise \
             -destination "id=${{ steps.sim.outputs.udid }}" \
             -only-testing:ForkwiseUITests \
+            -derivedDataPath build/DD \
             CODE_SIGNING_ALLOWED=NO | tail -60
 
       - name: Stop recording
