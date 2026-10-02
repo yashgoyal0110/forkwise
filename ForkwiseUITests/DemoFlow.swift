@@ -60,42 +60,37 @@ final class DemoFlow: XCTestCase {
         tap(app.buttons["Bowls"]); beat(1.3)
         tap(app.buttons["Wraps"]); beat(1.3)
         tap(app.buttons["All"]); beat(0.9)
-        // "Safe only" is at the end of the horizontal bar — scroll it in first.
+        // "Safe only" filter — tapped only if it's reachable on the bar.
         let safe = app.buttons["Safe only"]
-        if safe.exists, !safe.isHittable {
-            let drinks = app.buttons["Drinks"]
-            if drinks.exists, drinks.isHittable { drinks.swipeLeft() }
-            beat(0.5)
+        if safe.exists, safe.isHittable {
+            safe.tap(); beat(1.8); if safe.isHittable { safe.tap() }; beat(0.8)
         }
-        if tap(safe) { beat(1.8); tap(safe); beat(0.8) }    // filter on (hides unsafe), then off
-        // Scroll the list to show variety, then back up.
-        app.swipeUp(); beat(1.0); app.swipeUp(); beat(1.0)
-        app.swipeDown(); beat(0.6); app.swipeDown(); beat(0.8)
     }
 
     private func dishDetails(_ app: XCUIApplication) {
-        // UNSAFE dish (contains dairy) — red safety badge, then show full detail.
-        if tapScrolling(app, app.buttons["dish-bowl-paneer-tikka"]) {
+        // SAFE dish (sorts near the top) — green badge, log it.
+        if tap(app.buttons["dish-bowl-rajma-chawal"]) {
             beat(2.0)
-            app.swipeUp(); beat(1.8)                        // reveal nutrition, tags, allergens
-            app.swipeDown(); beat(0.8)
-            tap(app.buttons["favoriteToggle"]); beat(1.2)   // save to favorites
             tap(app.buttons["logDish"]); beat(1.4)          // "I ate this"
             back(app); beat(1.0)
         }
-        // SAFE dish — green badge, log it too.
-        if tapScrolling(app, app.buttons["dish-bowl-rajma-chawal"]) {
-            beat(1.8)
-            tap(app.buttons["logDish"]); beat(1.4)
-            back(app); beat(1.0)
+        // UNSAFE dish — surface it via search (no scrolling), show the red badge.
+        let search = app.searchFields.firstMatch
+        if search.waitForExistence(timeout: 4), search.isHittable {
+            search.tap(); search.typeText("paneer"); beat(1.3)
         }
+        if tap(app.buttons["dish-bowl-paneer-tikka"]) {
+            beat(2.2)
+            tap(app.buttons["favoriteToggle"]); beat(1.2)   // save to favorites
+            tap(app.buttons["logDish"]); beat(1.4)
+            back(app); beat(0.9)
+        }
+        tap(app.buttons["Clear text"]); tap(app.buttons["Cancel"]); beat(0.6)
     }
 
     private func savedAndToday(_ app: XCUIApplication) {
-        tap(app.tabBars.buttons["Saved"]); beat(2.2)        // favorited dish
-        tap(app.tabBars.buttons["Today"]); beat(2.4)        // ring + 7-day chart
-        app.swipeUp(); beat(1.8)                            // the "Eaten today" list
-        app.swipeDown(); beat(0.8)
+        tap(app.tabBars.buttons["Saved"]); beat(2.4)        // favorited dish
+        tap(app.tabBars.buttons["Today"]); beat(2.8)        // ring + 7-day chart
     }
 
     private func aiMealLogging(_ app: XCUIApplication) {
@@ -143,18 +138,6 @@ final class DemoFlow: XCTestCase {
         guard element.waitForExistence(timeout: timeout), element.isHittable else { return false }
         element.tap()
         return true
-    }
-
-    /// Taps an element, scrolling the list up a few times to reveal it if needed.
-    @discardableResult
-    private func tapScrolling(_ app: XCUIApplication, _ element: XCUIElement, timeout: Double = 6) -> Bool {
-        guard element.waitForExistence(timeout: timeout) else { return false }
-        if element.isHittable { element.tap(); return true }
-        for _ in 0..<4 {
-            app.swipeUp(); beat(0.3)
-            if element.isHittable { element.tap(); return true }
-        }
-        return false
     }
 
     private func back(_ app: XCUIApplication) {
