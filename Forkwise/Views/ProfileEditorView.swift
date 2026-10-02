@@ -25,6 +25,7 @@ struct ProfileEditorView: View {
                         Text("\(allergen.emoji)  \(allergen.label)")
                     }
                     .tint(.brand)
+                    .accessibilityIdentifier("pref-allergen-\(allergen.rawValue)")
                 }
             } header: {
                 Text("I'm allergic to")

@@ -27,8 +27,6 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate
 
-      # Pick an available iPhone simulator dynamically (device types/runtimes
-      # differ between runner images), create it, and boot it.
       - name: Create & boot simulator
         id: sim
         run: |
@@ -64,6 +62,7 @@ jobs:
 
       - name: Start recording
         run: |
+          date +%s.%N > rec.start
           xcrun simctl io "${{ steps.sim.outputs.udid }}" recordVideo --codec=h264 --force "$PWD/forkwise-demo.mp4" &
           echo $! > rec.pid
           sleep 2
@@ -79,7 +78,7 @@ jobs:
             -destination "id=${{ steps.sim.outputs.udid }}" \
             -only-testing:ForkwiseUITests \
             -derivedDataPath build/DD \
-            CODE_SIGNING_ALLOWED=NO | tail -60
+            CODE_SIGNING_ALLOWED=NO 2>&1 | tee uitest.log | tail -n 40
 
       - name: Stop recording
         if: always()
@@ -88,10 +87,34 @@ jobs:
           sleep 4
           ls -lh forkwise-demo.mp4 || true
 
+      # Trim the recording to exactly the active window using the markers the
+      # UI test printed, cutting xcodebuild's spin-up and teardown.
+      - name: Trim video to active window
+        if: always()
+        run: |
+          REC_START=$(cat rec.start 2>/dev/null || echo "")
+          START=$(grep -hoE "FORKWISE_MARK START [0-9.]+" uitest.log 2>/dev/null | head -1 | awk '{print $3}')
+          END=$(grep -hoE "FORKWISE_MARK END [0-9.]+" uitest.log 2>/dev/null | tail -1 | awk '{print $3}')
+          echo "REC_START=$REC_START START=$START END=$END"
+          if [ -z "$REC_START" ] || [ -z "$START" ] || [ -z "$END" ]; then
+            echo "Markers missing — keeping the full video."
+            cp forkwise-demo.mp4 forkwise-demo-trimmed.mp4 || true
+            exit 0
+          fi
+          command -v ffmpeg >/dev/null || brew install ffmpeg
+          OFFSET=$(python3 -c "print(max(0.0, $START - $REC_START - 1.5))")
+          DUR=$(python3 -c "print(max(1.0, $END - $START + 2.5))")
+          echo "Trimming: start=$OFFSET dur=$DUR"
+          ffmpeg -y -ss "$OFFSET" -i forkwise-demo.mp4 -t "$DUR" -an \
+            -c:v libx264 -preset veryfast -crf 20 -pix_fmt yuv420p forkwise-demo-trimmed.mp4
+          ls -lh forkwise-demo-trimmed.mp4 || true
+
       - name: Upload demo video
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: forkwise-demo-video
-          path: forkwise-demo.mp4
+          path: |
+            forkwise-demo-trimmed.mp4
+            forkwise-demo.mp4
           if-no-files-found: warn
