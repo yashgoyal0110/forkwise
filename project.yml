@@ -1,8 +1,6 @@
 # XcodeGen project definition.
-# This file lets anyone regenerate the Xcode project from source with one
-# command (`xcodegen generate`), so the repo doesn't need the fiddly, auto-
-# generated .xcodeproj checked in. It's also a neat thing to have on a resume
-# project - it shows you understand how an Xcode project is actually configured.
+# Regenerate the Xcode project from source with:  xcodegen generate
+# (so the repo doesn't need the auto-generated .xcodeproj checked in).
 
 name: Forkwise
 options:
@@ -13,10 +11,10 @@ options:
 
 settings:
   base:
-    SWIFT_VERSION: "5.0"          # Swift 5 language mode - simplest to build
+    SWIFT_VERSION: "5.0"
     MARKETING_VERSION: "1.0"
     CURRENT_PROJECT_VERSION: "1"
-    DEVELOPMENT_TEAM: ""          # set this to your Apple ID team to run on a device
+    DEVELOPMENT_TEAM: ""
 
 targets:
   Forkwise:
@@ -43,3 +41,28 @@ targets:
       base:
         GENERATE_INFOPLIST_FILE: YES
         PRODUCT_BUNDLE_IDENTIFIER: com.yourname.forkwiseTests
+
+  ForkwiseUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - ForkwiseUITests
+    dependencies:
+      - target: Forkwise
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.yourname.forkwiseUITests
+        TEST_TARGET_NAME: Forkwise
+
+schemes:
+  Forkwise:
+    build:
+      targets:
+        Forkwise: all
+        ForkwiseTests: [test]
+        ForkwiseUITests: [test]
+    test:
+      targets:
+        - ForkwiseTests
+        - ForkwiseUITests

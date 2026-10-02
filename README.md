@@ -1,5 +1,7 @@
 # Forkwise 🍽
 
+[![iOS build](https://github.com/yashgoyal0110/forkwise/actions/workflows/ios.yml/badge.svg)](https://github.com/yashgoyal0110/forkwise/actions/workflows/ios.yml)
+
 **A personal food & allergen tracker for iOS.** Browse a food catalog and Forkwise
 instantly tells you whether each dish is **safe for you** based on your own
 allergy profile - then helps you track what you eat against a daily calorie goal.

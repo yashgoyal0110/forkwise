@@ -1,0 +1,83 @@
+name: iOS
+
+on:
+  push:
+    branches: ["**"]
+  workflow_dispatch:
+
+jobs:
+  build-test-record:
+    name: Build, test & record demo
+    runs-on: macos-14
+    env:
+      SIM_DEVICE: "iPhone 15"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      # ---- Unit tests (drives the build-passing badge) ----
+      - name: Unit tests
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project Forkwise.xcodeproj \
+            -scheme Forkwise \
+            -destination "platform=iOS Simulator,name=${SIM_DEVICE}" \
+            -only-testing:ForkwiseTests \
+            CODE_SIGNING_ALLOWED=NO | tail -40
+
+      # ---- Boot a dedicated simulator for the recording ----
+      - name: Boot simulator
+        id: sim
+        run: |
+          RUNTIME=$(xcrun simctl list runtimes | grep -oE 'com.apple.CoreSimulator.SimRuntime.iOS-[0-9-]+' | tail -1)
+          echo "Using runtime: $RUNTIME"
+          UDID=$(xcrun simctl create "DemoPhone" "${SIM_DEVICE}" "$RUNTIME")
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+          # A clean status bar looks better on camera.
+          xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
+
+      # ---- Start screen recording (HD, native resolution) ----
+      - name: Start recording
+        run: |
+          xcrun simctl io "${{ steps.sim.outputs.udid }}" recordVideo --codec=h264 --force "$PWD/forkwise-demo.mp4" &
+          echo $! > rec.pid
+          sleep 2
+
+      # ---- Run the UI walkthrough on the recorded simulator ----
+      - name: UI walkthrough
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project Forkwise.xcodeproj \
+            -scheme Forkwise \
+            -destination "id=${{ steps.sim.outputs.udid }}" \
+            -only-testing:ForkwiseUITests \
+            CODE_SIGNING_ALLOWED=NO | tail -60
+
+      - name: Stop recording
+        if: always()
+        run: |
+          if [ -f rec.pid ]; then kill -INT "$(cat rec.pid)" || true; fi
+          sleep 4
+          ls -lh forkwise-demo.mp4 || true
+
+      - name: Upload demo video
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: forkwise-demo-video
+          path: forkwise-demo.mp4
+          if-no-files-found: warn
