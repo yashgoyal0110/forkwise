@@ -49,7 +49,9 @@ struct ForkwiseApp: App {
     private func bootstrap() async {
         if catalog.dishes.isEmpty { await catalog.load() }
 
-        guard reminderEnabled else {
+        // Never request notification permission during an automated recording —
+        // the system dialog would cover the app and block the walkthrough.
+        guard !DemoMode.isActive, reminderEnabled else {
             NotificationManager.shared.cancelMealReminder()
             return
         }

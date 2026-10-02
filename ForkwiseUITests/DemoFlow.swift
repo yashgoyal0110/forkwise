@@ -16,6 +16,7 @@ final class DemoFlow: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-uitestDemo"]
         app.launch()
+        dismissSystemAlerts()   // backup: clear any permission dialog before we start
         beat(2)
 
         onboarding(app)
@@ -139,6 +140,19 @@ final class DemoFlow: XCTestCase {
         let bar = app.navigationBars.firstMatch
         let button = bar.buttons.element(boundBy: 0)
         if button.exists, button.isHittable { button.tap() }
+    }
+
+    /// Dismisses a system permission alert (e.g. notifications) if one is on screen.
+    private func dismissSystemAlerts() {
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let deadline = Date().addingTimeInterval(3)
+        while Date() < deadline {
+            for label in ["Allow", "Allow While Using App", "OK"] {
+                let button = springboard.buttons[label]
+                if button.exists, button.isHittable { button.tap(); return }
+            }
+            Thread.sleep(forTimeInterval: 0.3)
+        }
     }
 
     private func beat(_ seconds: Double = 1.3) {
