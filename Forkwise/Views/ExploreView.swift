@@ -60,6 +60,7 @@ struct ExploreView: View {
                                  isFavorite: favoritesVM.isFavorite(dish))
                     }
                     .buttonStyle(.plain)
+                    .accessibilityIdentifier("dish-\(dish.id)")
                     .contextMenu { favoriteButton(dish) }
                 }
             }

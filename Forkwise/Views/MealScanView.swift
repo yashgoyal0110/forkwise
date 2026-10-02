@@ -104,6 +104,7 @@ struct MealScanView: View {
                 .lineLimit(2...4)
                 .padding().background(Color.surface, in: RoundedRectangle(cornerRadius: 12))
                 .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(Color.hairline.opacity(0.5), lineWidth: 0.5))
+                .accessibilityIdentifier("aiMealText")
 
             analyzeButton(enabled: text.trimmingCharacters(in: .whitespaces).count > 1) {
                 await run { try await ai.parse(text: text, allergies: allergies) }
@@ -121,6 +122,7 @@ struct MealScanView: View {
         }
         .buttonStyle(.borderedProminent).tint(.brand).controlSize(.large)
         .disabled(!enabled || isLoading)
+        .accessibilityIdentifier("aiAnalyze")
     }
 
     // MARK: - Result
@@ -161,6 +163,7 @@ struct MealScanView: View {
             }
             .buttonStyle(.borderedProminent).tint(didLog ? .safe : .brand).controlSize(.large)
             .disabled(didLog)
+            .accessibilityIdentifier("aiLogIt")
             .padding(.top, Theme.Spacing.xs)
         }
         .card()

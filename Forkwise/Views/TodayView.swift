@@ -45,6 +45,7 @@ struct TodayView: View {
                     } label: {
                         Label("Log with AI", systemImage: "sparkles")
                     }
+                    .accessibilityIdentifier("logWithAI")
                 }
             }
             .sheet(isPresented: $showScan, onDismiss: { intakeVM.refresh() }) {

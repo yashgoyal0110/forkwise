@@ -58,7 +58,8 @@ struct OnboardingView: View {
         stepScaffold(title: "Your diet", subtitle: "We'll highlight dishes that fit.") {
             VStack(spacing: Theme.Spacing.md) {
                 ForEach(DietPreference.allCases) { diet in
-                    selectRow(title: diet.label, selected: profileVM.profile.diet == diet) {
+                    selectRow(title: diet.label, selected: profileVM.profile.diet == diet,
+                              id: "diet-\(diet.rawValue)") {
                         profileVM.profile.diet = diet
                     }
                 }
@@ -71,7 +72,8 @@ struct OnboardingView: View {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: Theme.Spacing.md) {
                 ForEach(Allergen.allCases) { allergen in
                     let on = profileVM.profile.allergies.contains(allergen)
-                    selectRow(title: "\(allergen.emoji)  \(allergen.label)", selected: on) {
+                    selectRow(title: "\(allergen.emoji)  \(allergen.label)", selected: on,
+                              id: "allergen-\(allergen.rawValue)") {
                         if on { profileVM.profile.allergies.remove(allergen) }
                         else { profileVM.profile.allergies.insert(allergen) }
                     }
@@ -124,6 +126,7 @@ struct OnboardingView: View {
             .foregroundStyle(.white)
             .padding(.horizontal, Theme.Spacing.xl).padding(.vertical, Theme.Spacing.md)
             .background(Color.brand, in: Capsule())
+            .accessibilityIdentifier("onboarding.primary")
         }
         .padding(Theme.Spacing.lg)
     }
@@ -145,7 +148,8 @@ struct OnboardingView: View {
         }
     }
 
-    private func selectRow(title: String, selected: Bool, action: @escaping () -> Void) -> some View {
+    private func selectRow(title: String, selected: Bool, id: String? = nil,
+                           action: @escaping () -> Void) -> some View {
         Button {
             Haptics.selection()
             withAnimation(.snappy) { action() }
@@ -165,5 +169,6 @@ struct OnboardingView: View {
             )
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier(id ?? title)
     }
 }

@@ -18,6 +18,9 @@ struct ForkwiseApp: App {
 
     init() {
         let context = persistence.container.viewContext
+        // For CI UI-test recordings only (no-op otherwise): seed a demo profile
+        // + meal history and skip onboarding, before the view models load.
+        DemoMode.applyIfNeeded(context: context)
         _profileVM = StateObject(wrappedValue: ProfileViewModel(context: context))
         _intakeVM = StateObject(wrappedValue: IntakeViewModel(context: context))
         _favoritesVM = StateObject(wrappedValue: FavoritesViewModel(context: context))

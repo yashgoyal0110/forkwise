@@ -63,6 +63,7 @@ struct DishDetailView: View {
                     Image(systemName: favoritesVM.isFavorite(dish) ? "heart.fill" : "heart")
                         .foregroundStyle(Color.danger)
                 }
+                .accessibilityIdentifier("favoriteToggle")
             }
         }
     }
@@ -140,6 +141,7 @@ struct DishDetailView: View {
         .tint(didLog ? .safe : .brand)
         .controlSize(.large)
         .disabled(didLog)
+        .accessibilityIdentifier("logDish")
         .padding(.horizontal, Theme.Spacing.lg)
         .padding(.vertical, Theme.Spacing.md)
         .background(.bar)
